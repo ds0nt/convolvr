@@ -1,16 +1,15 @@
 import Avatar from './avatars/default.js';
 
 export default class World {
-	constructor() {
+	constructor(socket, userInput) {
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),
 			renderer = new THREE.WebGLRenderer(),
-			mobile = app.mobile,
+			mobile = (window.innerWidth <= 640),
 			self = this,
 			sunGeom = new THREE.OctahedronGeometry(16000, 0),
 			material = new THREE.MeshBasicMaterial( {color: 0xffffff, opacity: 0.9, transparent: true} ),
 			sun = new THREE.Mesh(sunGeom, material),
-			ground = new THREE.Mesh(new THREE.PlaneGeometry(1200000, 1200000, 6, 6), new THREE.MeshPhongMaterial({color: 0x222222})),
 			light = new THREE.PointLight(0xfcfcff, 1.5, 900000),
 			panelMat = new THREE.MeshLambertMaterial({ color: 0xe1e1e1 }),
 			cellGeometry = new THREE.CylinderGeometry(192, 192, 128, 6),
@@ -22,9 +21,7 @@ export default class World {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		document.body.appendChild( renderer.domElement );
 		renderer.domElement.setAttribute("id", "viewport");
-		ground.rotation.x = -Math.PI /2;
-		scene.add(ground);
-		this.ground = ground;
+		//ground.rotation.x = -Math.PI /2;
 		this.three = {
 			sun: sun,
 			scene: scene,
@@ -33,15 +30,22 @@ export default class World {
 			renderer: renderer
 		};
 
+		this.skybox = null;
+
+		this.socket = socket;
+		this.userInput = userInput;
+		this.sendUpdatePacket = 0;
+		this.capturing = false;
+		this.webcamImage = "";
+
 		window.three = this.three;
 		scene.fog = new THREE.FogExp2(0xffffff, 0.0000025);
 		// light.position.set(0, 60000, -32000);
 		renderer.setClearColor(0x2B7CA1);
 		camera.position.set(0, 4500, 15);
-		this.skybox = null;
 
 		function render (last) {
-			var sys = app,
+			var sys = world,
 				camera = three.camera,
 				delta = ((Date.now() - last) / 10000),
 				time = (Date.now() / 4600),
@@ -95,29 +99,18 @@ export default class World {
 				requestAnimationFrame( function () { render(last); } );
 			};
 
-			var skyTexture = THREE.ImageUtils.loadTexture("/images/depth-sky-2.jpg", null, function () {
-				var skybox = new THREE.Object3D(), // used to use larger jpeg version sunset-5.jpg
-					skyboxFace = null,
-					skyboxSideMat = new THREE.MeshBasicMaterial({
-						map: skyTexture,
-						side: 1,
-						fog: false,
-						color: 0xffffff // too dark.. not dark enough? 0x60daff//  0x80faff too green
-					}),
-					x = 0;
+			// init sky with shaders.... work in progress
 
-					skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyboxSideMat);
-					self.skybox = skybox;
-					skybox.add(light);
-					skybox.add(three.sun);
-					three.sun.position.set(0, 120000, -380000);
-					light.position.set(0, 250000, -250000);
-					three.scene.add(skybox);
-					skybox.position.set(three.camera.position.x, 0, three.camera.position.z);
-					skyTexture.needsUpdate = true;
+			// skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyboxSideMat);
+			// self.skybox = skybox;
+			// skybox.add(light);
+			// skybox.add(three.sun);
+			// three.sun.position.set(0, 120000, -380000);
+			// light.position.set(0, 250000, -250000);
+			// three.scene.add(skybox);
+			// skybox.position.set(three.camera.position.x, 0, three.camera.position.z);
 
-				render(0);
-			});
+			render(0);
 
 			var configure = {
 				baseURL: 'https://vpylon.net',
