@@ -1,4 +1,4 @@
-console.log('🌀 Spinning up turbines...');
+console.log('🌀 Powering up...');
 // React
 import ReactDOM from 'react-dom';
 import React, { Component, PropTypes } from 'react';
