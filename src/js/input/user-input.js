@@ -2,7 +2,7 @@ export default class UserInput {
 	constructor () {
 		 return {
 			camera: null,
-			device: null,
+			avatar: null,
 			focus: false,
 			fullscreen: false,
 			rotationVector: {
@@ -18,9 +18,9 @@ export default class UserInput {
 			lastTouch: [[0,0], [0,0]],
 			leapMotion: false,
 			leapMode: "hybrid",
-			init: function (camera, device) {
+			init: function (camera, avatar) {
 				var uInput = this;
-				this.connect(camera, device);
+				this.connect(camera, avatar);
 				uInput.rotationVector = {x: 0.2, y: 5.65, z: 0};
 				var canvas = document.querySelector("canvas#viewport");
 				canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
@@ -184,19 +184,19 @@ export default class UserInput {
 				this.tmpQuaternion = new THREE.Quaternion();
 				this.moveVector = new THREE.Vector3(0, 0, 0);
 			},
-			connect: function (camera, device) {
+			connect: function (camera, avatar) {
 				this.camera = camera;
-				this.device = device;
-				device.userInput = this;
+				this.avatar = avatar;
+				avatar.userInput = this;
 			},
 			update: function (delta) {
 				var bottom = 0,
-          	velocity = this.device.velocity; //world.getElevation(this.camera.position);
+          	velocity = this.avatar.velocity; //world.getElevation(this.camera.position);
 
                 if (app.mode == "vr") {
 					this.handleKeys();
-					if (this.device.gravity > 0.25 ) {
-						velocity.y -= 320 * this.device.gravity;
+					if (this.avatar.gravity > 0.25 ) {
+						velocity.y -= 320 * this.avatar.gravity;
 					}
 				}
 
@@ -215,7 +215,7 @@ export default class UserInput {
 					} else {
 						velocity.y *= -0.20;
 					}
-					this.device.falling = false;
+					this.avatar.falling = false;
 					this.camera.position.y = bottom + 500;
 					if (velocity.y > 1000) {
 						app.vibrate(50);
@@ -232,7 +232,7 @@ export default class UserInput {
 				}
 			},
 			handleKeys: function () {
-                var velocity = this.device.velocity;
+                var velocity = this.avatar.velocity;
 				if (this.keys.a) {  // maybe insert more options here...
 					this.moveVector.x = -1200;
 				} else if (this.keys.d) {
@@ -252,8 +252,8 @@ export default class UserInput {
 					velocity.x *= 1.02;
 					velocity.z *= 1.02;
 				}
-				if (this.keys.space && !this.device.falling) {
-					this.device.falling = true;
+				if (this.keys.space && !this.avatar.falling) {
+					this.avatar.falling = true;
 					velocity.y = 16000;
 				}
 			},

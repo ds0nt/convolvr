@@ -8,6 +8,12 @@ import {
 } from '../constants/action-types';
 import axios from 'axios';
 
+var configure = {
+  baseURL: 'https://convolvr.io',
+  timeout: 1000,
+  headers: {'x-access-token': localStorage.getItem("token")}
+};
+
 export function addAvatar (data) {
     return {
         type: ADD_AVATAR,

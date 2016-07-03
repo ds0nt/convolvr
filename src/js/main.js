@@ -28,9 +28,17 @@ import World from './world/world.js';
 //import Avatar from './world/avatars/default.js';
 
 var token = localStorage.getItem("token"),
-	userInput = new UserInput(socket),
-	world = new World(socket, userInput),
-	avatar = null;
+		userInput,
+		world,
+		avatar = null;
+
+	world = new World(socket);
+	userInput = new UserInput(socket);
+	userInput.init(world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
+	world.connect("input", userInput);
+
+
+
 
 dispatch(fetchPlatforms());
 dispatch(fetchTracks());

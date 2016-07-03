@@ -1,7 +1,7 @@
 import Avatar from './avatars/default.js';
 
 export default class World {
-	constructor(socket, userInput) {
+	constructor(socket, userInput, user) {
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),
 			renderer = new THREE.WebGLRenderer(),
@@ -31,9 +31,10 @@ export default class World {
 		};
 
 		this.skybox = null;
-
+		this.user = false;
 		this.socket = socket;
-		this.userInput = userInput;
+		this.input = false;
+		this.camera = camera;
 		this.sendUpdatePacket = 0;
 		this.capturing = false;
 		this.webcamImage = "";
@@ -45,17 +46,17 @@ export default class World {
 		camera.position.set(0, 4500, 15);
 
 		function render (last) {
-			var sys = world,
+			var sys = self,
 				camera = three.camera,
 				delta = ((Date.now() - last) / 10000),
 				time = (Date.now() / 4600),
 				image = "",
 				imageSize = [0, 0],
 				arms = [],
-				userArms = sys.user.arms;
+				userArms = sys.user && sys.user.arms;
 
-			if (!! sys.userInput) {
-				sys.userInput.update(delta);
+			if (!! sys.input) {
+				sys.input.update(delta);
 			}
 			if (sys.sendUpdatePacket == 30) { // send image
 				if (sys.capturing) {
@@ -77,7 +78,7 @@ export default class World {
 			sys.sendUpdatePacket += 1;
 			if (sys.sendUpdatePacket %(2*(mobile ? 2 : 1)) == 0 && sys.mode == "vr") {
 
-				if (sys.userInput.leapMotion) {
+				if (sys.input.leapMotion) {
 					userArms.forEach(function (arm) {
 						arms.push({pos: [arm.position.x, arm.position.y, arm.position.z],
 							quat: [arm.quaternion.x, arm.quaternion.y, arm.quaternion.z, arm.quaternion.w] });
@@ -109,15 +110,13 @@ export default class World {
 			// light.position.set(0, 250000, -250000);
 			// three.scene.add(skybox);
 			// skybox.position.set(three.camera.position.x, 0, three.camera.position.z);
+			this.connect = (type, ref) => {
+				if (type == "input") {
+					self.input = ref;
+				}
+			}
 
 			render(0);
-
-			var configure = {
-				baseURL: 'https://vpylon.net',
-				timeout: 1000,
-				headers: {'x-access-token': localStorage.getItem("token")}
-			};
-
 		}
 
 	};
