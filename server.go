@@ -52,8 +52,11 @@ func main() {
 	http.HandleFunc("/api/files", handleFiles)
 	http.HandleFunc("/api/messages", handleMessages)
 
-	//err := http.ListenAndServe(":3601", nil) // if encryption isn't available, otherwise..
-	err := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
+	http.Handle("/socket.io", initSockets())
+
+	err := http.ListenAndServe(":3080", nil) // if encryption isn't available, otherwise..
+	//err := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
+
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	} else {
@@ -66,8 +69,7 @@ func main() {
 			DB:       0,
 	})
 	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
-	http.Handle("/socket.io/", initSockets())
+	fmt.Println(pong, err)	
 }
 
 func handleUsers (w http.ResponseWriter, r *http.Request) {

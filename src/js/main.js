@@ -32,13 +32,10 @@ var token = localStorage.getItem("token"),
 		world,
 		avatar = null;
 
-	world = new World(socket);
+
 	userInput = new UserInput(socket);
-	userInput.init(world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
-	world.connect("input", userInput);
-
-
-
+	world = new World(socket, userInput);
+	userInput.init(world, world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
 
 //store.dispatch(fetchPlatforms());
 //store.dispatch(fetchTracks());

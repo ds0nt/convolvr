@@ -1,6 +1,8 @@
 export default class UserInput {
-	constructor () {
-		this.camera = null;
+	constructor (socket) {
+		this.camera = {
+			rotation: new THREE.Vector3()
+		};
 		this.device = {
 			velocity: {
 				x: 0, y: 0, z: 0
@@ -51,7 +53,7 @@ export default class UserInput {
 			uInput.focus =(document.pointerLockElement===canvas||document.mozPointerLockElement===canvas||document.webkitPointerLockElement===canvas);
 			uInput.fullscreen = uInput.focus;
 			if (!uInput.fullscreen && world.user.username != "") {
-				app.showChat();
+				//world.showChat();
 				world.mode = "desktop";
 				while (a < world.user.arms.length) {
 					world.user.arms[a].visible = false;
@@ -210,37 +212,40 @@ export default class UserInput {
 				velocity.y -= 320 * this.device.gravity;
 			}
 		}
+		console.log(this.camera);
+		if (!!this.camera) {
+			this.camera.rotation.set(this.rotationVector.x, this.rotationVector.y, 0, "YXZ");
+			velocity.add(this.moveVector.applyQuaternion(this.camera.quaternion));
 
-		this.camera.rotation.set(this.rotationVector.x, this.rotationVector.y, 0, "YXZ");
-		velocity.add(this.moveVector.applyQuaternion(this.camera.quaternion));
+			if (this.leapMotion && this.moveVector.length() > 0) {
+				if (velocity.y < 0) {
+					velocity.y *= 0.95;
+				}
+			}
+			this.moveVector.set(0, 0, 0);
+			if (this.camera.position.y < bottom + 500) {
+				if (this.keys.shift) {
+					velocity.y *= -0.70;
+				} else {
+					velocity.y *= -0.20;
+				}
+				this.device.falling = false;
+				this.camera.position.y = bottom + 500;
+				if (velocity.y > 1000) {
+					world.vibrate(50);
+				}
+			}
+			this.camera.matrix.setPosition(this.camera.position.add(new THREE.Vector3(velocity.x*delta, velocity.y*delta, velocity.z*delta)) );
+			this.camera.matrix.makeRotationFromQuaternion(this.camera.quaternion );
+			this.camera.matrixWorldNeedsUpdate = true;
+			velocity.x *= 0.98;
+			velocity.z *= 0.98;
+			if (!! world.user.mesh) {
+				world.user.mesh.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+				world.user.mesh.rotation.y = (this.camera.rotation.y);
+			}
+		}
 
-		if (this.leapMotion && this.moveVector.length() > 0) {
-			if (velocity.y < 0) {
-				velocity.y *= 0.95;
-			}
-		}
-		this.moveVector.set(0, 0, 0);
-		if (this.camera.position.y < bottom + 500) {
-			if (this.keys.shift) {
-				velocity.y *= -0.70;
-			} else {
-				velocity.y *= -0.20;
-			}
-			this.device.falling = false;
-			this.camera.position.y = bottom + 500;
-			if (velocity.y > 1000) {
-				world.vibrate(50);
-			}
-		}
-		this.camera.matrix.setPosition(this.camera.position.add(new THREE.Vector3(velocity.x*delta, velocity.y*delta, velocity.z*delta)) );
-		this.camera.matrix.makeRotationFromQuaternion(this.camera.quaternion );
-		this.camera.matrixWorldNeedsUpdate = true;
-		velocity.x *= 0.98;
-		velocity.z *= 0.98;
-		if (!! world.user.mesh) {
-			world.user.mesh.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
-			world.user.mesh.rotation.y = (this.camera.rotation.y);
-		}
 	}
 
 	handleKeys () {

@@ -15,6 +15,7 @@ export default class World {
 			panelMat = new THREE.MeshLambertMaterial({ color: 0xe1e1e1 }),
 			cellGeometry = new THREE.CylinderGeometry(192, 192, 128, 6),
 			cell = null,
+			three = {},
 			x = 0,
 			y = 0,
 			r = 4000;
@@ -24,6 +25,7 @@ export default class World {
 			arms: [],
 			velocity: new THREE.Vector3()
 		}
+		this.camera = camera;
 		this.mobile = mobile;
 		this.socket = socket;
 		this.userInput = userInput;
@@ -51,7 +53,7 @@ export default class World {
 		scene.add(this.skybox);
 		this.skybox.position.set(camera.position.x, 0, camera.position.z);
 
-		this.three = {
+		three = this.three = {
 			sun: sun,
 			scene: scene,
 			chunks: [],
@@ -68,6 +70,11 @@ export default class World {
 			headers: {'x-access-token': localStorage.getItem("token")}
 		};
 
+		window.onresize = function () {
+			three.renderer.setSize(window.innerWidth, window.innerHeight);
+			three.camera.aspect = innerWidth / innerHeight;
+			three.camera.updateProjectionMatrix();
+		}
 
 	}
 
