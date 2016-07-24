@@ -32,9 +32,9 @@ var token = localStorage.getItem("token"),
 	world = new World(socket, userInput),
 	avatar = null;
 
-dispatch(fetchPlatforms());
-dispatch(fetchTracks());
-dispatch(fetchUsers());
+//store.dispatch(fetchPlatforms());
+//store.dispatch(fetchTracks());
+//store.dispatch(fetchUsers());
 
 const muiTheme = getMuiTheme({
       palette: {

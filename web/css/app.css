@@ -1,1 +1,13 @@
 /* app.css */
+body {
+
+}
+#root {
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+#viewport {
+    cursor: pointer;
+}

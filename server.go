@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"gopkg.in/redis.v3"
 	"github.com/googollee/go-socket.io"
-
+	//"github.com/ant0ine/go-json-rest/rest"
+	config "github.com/SpaceHexagon/convolvr/config"
 )
 
 func initSockets () (*socketio.Server) {
@@ -35,6 +36,7 @@ func initSockets () (*socketio.Server) {
 
 
 func main() {
+	settings := config.GetConfig()
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.HandleFunc("/api/users", handleUsers)
 	http.HandleFunc("/api/avatars", handleAvatars)
@@ -50,12 +52,12 @@ func main() {
 	http.HandleFunc("/api/files", handleFiles)
 	http.HandleFunc("/api/messages", handleMessages)
 
-	err := http.ListenAndServe(":3600", nil)
-	//err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+	//err := http.ListenAndServe(":3601", nil) // if encryption isn't available, otherwise..
+	err := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	} else {
-		log.Println("Battlecruiser Operational! port: 3600")
+		log.Println("Battlecruiser Operational! port: "+settings.Port)
 	}
 
 	client := redis.NewClient(&redis.Options{
@@ -65,37 +67,44 @@ func main() {
 	})
 	pong, err := client.Ping().Result()
 	fmt.Println(pong, err)
-
 	http.Handle("/socket.io/", initSockets())
 }
 
 func handleUsers (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	r.ParseForm()
+	fmt.Println(r.Form)
+	fmt.Println("path", r.URL.Path)
+ 	fmt.Println("scheme", r.URL.Scheme)
+	io.WriteString(w, "{users:[]}")
 }
 
 func handleAvatars (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{avatars:[]}")
 }
 
 func handlePlatforms (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	r.ParseForm()
+	fmt.Println(r.Form)
+	fmt.Println("path", r.URL.Path)
+	fmt.Println("scheme", r.URL.Scheme)
+	io.WriteString(w, "{platforms:[]}")
 }
 
 func handleTracks (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{tracks:[]}")
 }
 
 func handleGroups (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{groups:[]}")
 }
 
 func handleFriends (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{friends:[]}")
 }
 
 func handleComponents (w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()  // parse arguments, you have to call this by yourself
-	 fmt.Println(r.Form)  // print form information in server side
+	r.ParseForm()
+	 fmt.Println(r.Form)
 	 fmt.Println("path", r.URL.Path)
 	 fmt.Println("scheme", r.URL.Scheme)
 	 fmt.Println(r.Form["url_long"])
@@ -107,27 +116,27 @@ func handleComponents (w http.ResponseWriter, r *http.Request) {
 }
 
 func handleEntities (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{entities:[]}")
 }
 
 func handleTools (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{tools:[]}")
 }
 
 func handlePatterns (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{patterns:[]}")
 }
 
 func handlePages (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{pages:[]}")
 }
 
 func handleFiles (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{files:[]}")
 }
 
 func handleMessages (w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{}")
+	io.WriteString(w, "{messages:[]}")
 }
 
 
