@@ -2,6 +2,7 @@
 precision mediump float;
 #endif
 varying vec2 vUv;
+uniform float time;
 
 void main( void ) {
     float blue = sin(3.14159265359*)*0.66;

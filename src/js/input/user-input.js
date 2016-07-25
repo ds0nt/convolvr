@@ -1,6 +1,8 @@
 export default class UserInput {
-	constructor () {
-		this.camera = null;
+	constructor (socket) {
+		this.camera = {
+			rotation: new THREE.Vector3()
+		};
 		this.device = {
 			velocity: {
 				x: 0, y: 0, z: 0
@@ -51,7 +53,7 @@ export default class UserInput {
 			uInput.focus =(document.pointerLockElement===canvas||document.mozPointerLockElement===canvas||document.webkitPointerLockElement===canvas);
 			uInput.fullscreen = uInput.focus;
 			if (!uInput.fullscreen && world.user.username != "") {
-				app.showChat();
+				//world.showChat();
 				world.mode = "desktop";
 				while (a < world.user.arms.length) {
 					world.user.arms[a].visible = false;
@@ -158,10 +160,12 @@ export default class UserInput {
 					if (input.leapMode == "avatar") {
 						frame.hands.forEach(function (hand, index) {
 							var position = hand.screenPosition();
-							user.arms[index].visible = true;
-							user.arms[index].rotation.set(hand.pitch(), -hand.yaw(), 0);
-							user.arms[index].position.set(-50+((-window.innerWidth / 2) + position[0]), 0, -350 + position[2]);
-							user.arms[index].updateMatrix();
+							if (user.arms[index] != null) {
+								user.arms[index].visible = true;
+								user.arms[index].rotation.set(hand.pitch(), -hand.yaw(), 0);
+								user.arms[index].position.set(-50+((-window.innerWidth / 2) + position[0]), 0, -350 + position[2]);
+								user.arms[index].updateMatrix();
+							}
 						});
 					} else {
 						frame.hands.forEach(function (hand, index) {
@@ -174,11 +178,13 @@ export default class UserInput {
 								input.rotationVector.x += 0.015 * hand.pitch();
 							} else { // if its the second hand, control the arms/hands
 								while (handIndex < 2) {
-									user.arms[handIndex].visible = true;
-									user.arms[handIndex].rotation.set(hand.pitch(), -hand.yaw(), 0);
-									user.arms[handIndex].position.set(-50+((300*handIndex)+((-window.innerWidth / 2) + position[0])), 0, -350 + position[2]);
-									user.arms[handIndex].updateMatrix();
-									handIndex ++;
+									if (user.arms[handIndex] != null) {
+										user.arms[handIndex].visible = true;
+										user.arms[handIndex].rotation.set(hand.pitch(), -hand.yaw(), 0);
+										user.arms[handIndex].position.set(-50+((300*handIndex)+((-window.innerWidth / 2) + position[0])), 0, -350 + position[2]);
+										user.arms[handIndex].updateMatrix();
+										handIndex ++;
+									}
 								}
 							}
 						});
@@ -200,7 +206,7 @@ export default class UserInput {
 	}
 
 	update (delta) {
-		var bottom = 0,
+		var bottom = -32000,
 			world = this.world,
 			velocity = this.device.velocity; //world.getElevation(this.camera.position);
 
@@ -210,37 +216,37 @@ export default class UserInput {
 				velocity.y -= 320 * this.device.gravity;
 			}
 		}
+			this.camera.rotation.set(this.rotationVector.x, this.rotationVector.y, 0, "YXZ");
+			velocity.add(this.moveVector.applyQuaternion(this.camera.quaternion));
 
-		this.camera.rotation.set(this.rotationVector.x, this.rotationVector.y, 0, "YXZ");
-		velocity.add(this.moveVector.applyQuaternion(this.camera.quaternion));
+			if (this.leapMotion && this.moveVector.length() > 0) {
+				if (velocity.y < 0) {
+					velocity.y *= 0.95;
+				}
+			}
+			this.moveVector.set(0, 0, 0);
+			if (this.camera.position.y < bottom + 500) {
+				if (this.keys.shift) {
+					velocity.y *= -0.70;
+				} else {
+					velocity.y *= -0.20;
+				}
+				this.device.falling = false;
+				this.camera.position.y = bottom + 500;
+				if (velocity.y > 1000) {
+					//world.vibrate(50);
+				}
+			}
+			this.camera.matrix.setPosition(this.camera.position.add(new THREE.Vector3(velocity.x*delta, velocity.y*delta, velocity.z*delta)) );
+			this.camera.matrix.makeRotationFromQuaternion(this.camera.quaternion );
+			this.camera.matrixWorldNeedsUpdate = true;
+			velocity.x *= 0.98;
+			velocity.z *= 0.98;
+			if (!! world.user.mesh) {
+				world.user.mesh.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+				world.user.mesh.rotation.y = (this.camera.rotation.y);
+			}
 
-		if (this.leapMotion && this.moveVector.length() > 0) {
-			if (velocity.y < 0) {
-				velocity.y *= 0.95;
-			}
-		}
-		this.moveVector.set(0, 0, 0);
-		if (this.camera.position.y < bottom + 500) {
-			if (this.keys.shift) {
-				velocity.y *= -0.70;
-			} else {
-				velocity.y *= -0.20;
-			}
-			this.device.falling = false;
-			this.camera.position.y = bottom + 500;
-			if (velocity.y > 1000) {
-				world.vibrate(50);
-			}
-		}
-		this.camera.matrix.setPosition(this.camera.position.add(new THREE.Vector3(velocity.x*delta, velocity.y*delta, velocity.z*delta)) );
-		this.camera.matrix.makeRotationFromQuaternion(this.camera.quaternion );
-		this.camera.matrixWorldNeedsUpdate = true;
-		velocity.x *= 0.98;
-		velocity.z *= 0.98;
-		if (!! world.user.mesh) {
-			world.user.mesh.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
-			world.user.mesh.rotation.y = (this.camera.rotation.y);
-		}
 	}
 
 	handleKeys () {
