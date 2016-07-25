@@ -7,13 +7,14 @@ export default class World {
 			renderer = new THREE.WebGLRenderer(),
 			mobile = (window.innerWidth <= 640),
 			self = this,
-			sunGeom = new THREE.CylinderGeometry( 12000, 12000, 2000, 9),
-			material = new THREE.MeshBasicMaterial( {color: 0xffffff, opacity: 0.9, transparent: true} ),
-			skyboxSideMat = new THREE.MeshBasicMaterial( {color:0x231344, fog: false} ),
-			sun = new THREE.Mesh(sunGeom, material),
+			coreGeom = new THREE.CylinderGeometry( 8096, 8096, 1024, 9),
+			material = new THREE.MeshPhongMaterial( {color: 0xffffff} ),
+			skyboxSideMat = new THREE.MeshBasicMaterial( {color:0x241631, fog: false} ),
+			core = new THREE.Mesh(coreGeom, material),
 			light = new THREE.PointLight(0xfcfcff, 1.5, 900000),
 			panelMat = new THREE.MeshLambertMaterial({ color: 0xe1e1e1 }),
 			cellGeometry = new THREE.CylinderGeometry(192, 192, 128, 6),
+			skyShaderMat = null,
 			cell = null,
 			three = {},
 			x = 0,
@@ -33,28 +34,42 @@ export default class World {
 		this.capturing = false;
 		this.webcamImage = "";
 
-		scene.fog = new THREE.FogExp2(0xffffff, 0.0000025);
+		scene.fog = new THREE.FogExp2(0x241631, 0.0000045);
+		this.ambientLight = new THREE.AmbientLight(0x231344);
+		scene.add(this.ambientLight);
 		// light.position.set(0, 60000, -32000);
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		document.body.appendChild( renderer.domElement );
 		renderer.domElement.setAttribute("id", "viewport");
-		renderer.setClearColor(0x231344);
-		camera.position.set(0, 0, 15);
+		renderer.setClearColor(0x241631);
+		camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
 		userInput.init(this, camera, this.user);
 
 		// init sky with shaders.... work in progress
+
+		skyShaderMat = new THREE.ShaderMaterial( {
+			uniforms: {
+				time: { value: 1.0 }
+			},
+			vertexShader: document.getElementById('sky-vertex').textContent,
+			fragmentShader: document.getElementById('sky-fragment').textContent
+
+		} );
+
 		this.ground = new THREE.Object3D();
 		this.ground.rotation.x = -Math.PI /2;
-		this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyboxSideMat);
+		this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyShaderMat);
 		this.skybox.add(light);
-		this.skybox.add(sun);
-		sun.position.set(325000, 8000, -120000);
-		light.position.set(0, 200000, -120000);
+		scene.add(core);
+		core.position.set(0, 2000, 0);
+		light.position.set(0, 20000, 0);
 		scene.add(this.skybox);
 		this.skybox.position.set(camera.position.x, 0, camera.position.z);
 
 		three = this.three = {
-			sun: sun,
+			world: this,
+			skyMat: skyShaderMat,
+			core: core,
 			scene: scene,
 			chunks: [],
 			camera: camera,
@@ -80,7 +95,7 @@ export default class World {
 
 	render (last) {
 		var sys = this,
-			sun = sys.three.sun,
+			core = sys.three.core,
 			mobile = sys.mobile,
 			camera = sys.three.camera,
 			delta = ((Date.now() - last) / 10000),
@@ -127,7 +142,7 @@ export default class World {
 
 				}
 
-				sun.rotation.y += 0.005;
+				core.rotation.y += 0.005;
 				sys.skybox.position.set(camera.position.x, camera.position.y, camera.position.z);
 				sys.ground.position.set(camera.position.x, camera.position.y - 2000, camera.position.z)
 				sys.three.renderer.render(sys.three.scene, camera);

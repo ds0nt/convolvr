@@ -160,10 +160,12 @@ export default class UserInput {
 					if (input.leapMode == "avatar") {
 						frame.hands.forEach(function (hand, index) {
 							var position = hand.screenPosition();
-							user.arms[index].visible = true;
-							user.arms[index].rotation.set(hand.pitch(), -hand.yaw(), 0);
-							user.arms[index].position.set(-50+((-window.innerWidth / 2) + position[0]), 0, -350 + position[2]);
-							user.arms[index].updateMatrix();
+							if (user.arms[index] != null) {
+								user.arms[index].visible = true;
+								user.arms[index].rotation.set(hand.pitch(), -hand.yaw(), 0);
+								user.arms[index].position.set(-50+((-window.innerWidth / 2) + position[0]), 0, -350 + position[2]);
+								user.arms[index].updateMatrix();
+							}
 						});
 					} else {
 						frame.hands.forEach(function (hand, index) {
@@ -176,11 +178,13 @@ export default class UserInput {
 								input.rotationVector.x += 0.015 * hand.pitch();
 							} else { // if its the second hand, control the arms/hands
 								while (handIndex < 2) {
-									user.arms[handIndex].visible = true;
-									user.arms[handIndex].rotation.set(hand.pitch(), -hand.yaw(), 0);
-									user.arms[handIndex].position.set(-50+((300*handIndex)+((-window.innerWidth / 2) + position[0])), 0, -350 + position[2]);
-									user.arms[handIndex].updateMatrix();
-									handIndex ++;
+									if (user.arms[handIndex] != null) {
+										user.arms[handIndex].visible = true;
+										user.arms[handIndex].rotation.set(hand.pitch(), -hand.yaw(), 0);
+										user.arms[handIndex].position.set(-50+((300*handIndex)+((-window.innerWidth / 2) + position[0])), 0, -350 + position[2]);
+										user.arms[handIndex].updateMatrix();
+										handIndex ++;
+									}
 								}
 							}
 						});
@@ -202,7 +206,7 @@ export default class UserInput {
 	}
 
 	update (delta) {
-		var bottom = 0,
+		var bottom = -32000,
 			world = this.world,
 			velocity = this.device.velocity; //world.getElevation(this.camera.position);
 
@@ -212,8 +216,6 @@ export default class UserInput {
 				velocity.y -= 320 * this.device.gravity;
 			}
 		}
-		console.log(this.camera);
-		if (!!this.camera) {
 			this.camera.rotation.set(this.rotationVector.x, this.rotationVector.y, 0, "YXZ");
 			velocity.add(this.moveVector.applyQuaternion(this.camera.quaternion));
 
@@ -232,7 +234,7 @@ export default class UserInput {
 				this.device.falling = false;
 				this.camera.position.y = bottom + 500;
 				if (velocity.y > 1000) {
-					world.vibrate(50);
+					//world.vibrate(50);
 				}
 			}
 			this.camera.matrix.setPosition(this.camera.position.add(new THREE.Vector3(velocity.x*delta, velocity.y*delta, velocity.z*delta)) );
@@ -244,7 +246,6 @@ export default class UserInput {
 				world.user.mesh.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 				world.user.mesh.rotation.y = (this.camera.rotation.y);
 			}
-		}
 
 	}
 

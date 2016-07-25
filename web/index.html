@@ -21,30 +21,71 @@
         <meta name="twitter:image" content="Twitter image" />
         <style>
 			body {
-				overflow-x: hidden;
 				padding: 0;
 				margin: 0;
-				background: #fafafa;
-				color: #303030;
-				font-size: 20px;
+                width: 100%;
+                height:100%;
+                overflow-x: hidden;
+                position: absolute;
+                font-size: 20px;
                 font-family: sans-serif;
+				background: #241631;
+				color: #303030;
 			}
-			main {
-                opacity: 0;
-			}
+			h1 {
+
+            }
 			canvas {
 				position: fixed;
-				z-index: -1;
+				z-index: 2;
 			}
 		</style>
     </head>
     <body>
         <main id="root"></main>
         <link rel='stylesheet' href='/css/app.css' />
-        <script src="shaders/sky-vertex.glsl" type="x-shader/x-vertex" id="sky-vertex"></script>
-        <script src="shaders/sky-fragment.glsl" type="x-shader/x-fragment" id="sky-fragment"></script>
-        <script src="shaders/webcam-vertex.glsl" type="x-shader/x-vertex" id="webcam-vertex"></script>
-        <script src="shaders/webcam-fragment.glsl" type="x-shader/x-fragment" id="webcam-fragment"></script>
+        <script type="x-shader/x-vertex" id="sky-vertex">
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+            varying vec2 vUv;
+            void main () {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+            }
+        </script>
+        <script type="x-shader/x-fragment" id="sky-fragment">
+            #ifdef GL_ES
+            precision mediump float;
+            #endif
+            varying vec2 vUv;
+            uniform float time;
+
+            void main( void ) {
+                float blue = sin(3.14159265359)*0.66;
+                float green = blue/3.0;
+                float red = blue*(cos(3.14159265359)*cos(3.14159265359))/1.5;
+                vec4 color = vec4(red/*+0.2*(1.0-abs(vUv.y))*/, green, blue*0.5+vUv.y*0.4, 1.0); //3.141592654
+                float cloudOpacity = 0.0;
+                cloudOpacity = sin(3.14159265359)*0.8*sin(time*0.006+vUv.y/2.0) - (sin(vUv.y*1.5707963267948966)*sin(vUv.y*3.14159265359));
+
+                if (vUv.y < 0.13) {
+                    cloudOpacity *= (vUv.y / 0.13);
+                } else if (vUv.y > 0.87) {
+                    cloudOpacity *= 1.0-((vUv.y-0.87) / 0.13);
+                }
+                //vec4 cloudColor = texture2D(tex,vUv);
+                color *= cloudOpacity;
+
+                gl_FragColor = color;
+            }
+        </script>
+        <script type="x-shader/x-vertex" id="webcam-vertex">
+
+        </script>
+        <script type="x-shader/x-fragment" id="webcam-fragment">
+
+        </script>
         <script src='lib/three.min.js'></script>
         <script src="lib/leap.js"></script>
         <script src="lib/leap-plugins.js"></script>
