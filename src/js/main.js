@@ -21,7 +21,7 @@ import { indigo500, indigo600, amber800, amber500 } from 'material-ui/styles/col
 // World
 import UserInput from './input/user-input.js';
 import io from 'socket.io-client'
-let socket = io(`https://convolvr.io:3680`)
+let socket = io(`localhost:3080`)
 //import SocketEvents from './socket-events.js';
 //import WorldPhysics from './world/world-physics.js';
 import World from './world/world.js';

@@ -48,6 +48,8 @@ export default class World {
 		// init sky with shaders.... work in progress
 
 		skyShaderMat = new THREE.ShaderMaterial( {
+			side: 1,
+			fog: false,
 			uniforms: {
 				time: { value: 1.0 }
 			},
@@ -143,6 +145,7 @@ export default class World {
 				}
 
 				core.rotation.y += 0.005;
+				sys.skybox.material.uniforms.time.value += delta;
 				sys.skybox.position.set(camera.position.x, camera.position.y, camera.position.z);
 				sys.ground.position.set(camera.position.x, camera.position.y - 2000, camera.position.z)
 				sys.three.renderer.render(sys.three.scene, camera);
