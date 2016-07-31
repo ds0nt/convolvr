@@ -7,6 +7,7 @@ import {
     DELETE_PLATFORM
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addPlatform () {
     return {
@@ -19,7 +20,7 @@ export function fetchPlatforms (id) {
             type: FETCH_PLATFORMS,
             id: id
          });
-     return axios.get("http://localhost:3600/api/platforms"+id)
+     return axios.get(API_SERVER+"/api/platforms"+id)
         .then(response => {
             dispatch(receivePlatforms(response))
         }).catch(response => {

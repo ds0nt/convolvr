@@ -10,6 +10,7 @@ import {
     SELECT_PATTERN
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addPattern () {
     return {
@@ -38,7 +39,7 @@ export function fetchPatterns (id) {
          type: FETCH_PATTERNS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/patterns"+id)
+     return axios.get(API_SERVER+"/api/patterns"+id)
         .then(response => {
             dispatch(receivePatterns(response))
         }).catch(response => {

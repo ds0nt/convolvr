@@ -7,6 +7,7 @@ import {
     DELETE_COMPONENT
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addComponent (name, data) {
     return {
@@ -21,7 +22,7 @@ export function fetchComponents (id) {
          type: FETCH_COMPONENTS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/components"+id)
+     return axios.get(API_SERVER+"/api/components"+id)
         .then(response => {
             dispatch(receiveComponents(response))
         }).catch(response => {

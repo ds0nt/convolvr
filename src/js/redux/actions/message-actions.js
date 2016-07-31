@@ -7,6 +7,7 @@ import {
     DELETE_MESSAGE
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addMessage () {
     return {
@@ -19,7 +20,7 @@ export function fetchMESSAGES (id) {
          type: FETCH_MESSAGES,
          id: id
      })
-     return axios.get("http://localhost:3600/api/files"+id)
+     return axios.get(API_SERVER+"/api/files"+id)
         .then(response => {
             dispatch(receiveMESSAGES(response))
         }).catch(response => {

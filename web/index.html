@@ -63,15 +63,16 @@
             //3.141592654
 
             void main( void ) {
-                float blue = 0.5;
-                float red = 0.35;
-                float green = red *0.6;
-                float depth = abs(0.5 - vUv.y);
-                float intense = sin(vUv.x * 3.141592654) + 0.05 * sin(vUv.x * 3.141592654 * 24.0 );
+                float depth = 1.0-(abs(0.5 - vUv.y) * 6.0);
+                float intense = sin(vUv.x * 3.141592654) + 0.06 * -vUv.y *  sin(vUv.x * 3.141592654 * 24.0 );
+                float blue = 0.9*intense;
+                float red = 0.9;
+                float green = intense / 2.0;
+
                 vec4 color = vec4(
-                    intense * (red / (0.01+(depth * 8.0))),
-                    intense * (green / (0.01+(depth * 16.0))),
-                    intense * (blue / (0.01+(depth * 6.0))),
+                    (intense * ((red * depth))),
+                    (intense * ((depth * green))),
+                    depth * blue * 2.0,
                     1.0
                 );
 

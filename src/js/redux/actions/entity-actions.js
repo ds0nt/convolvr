@@ -7,6 +7,7 @@ import {
     DELETE_ENTITY
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addEntity (id, name, components) {
     return {
@@ -22,7 +23,7 @@ export function fetchEntities (id) {
          type: FETCH_ENTITIES,
          id: id
      })
-     return axios.get("http://localhost:3600/api/entities"+id)
+     return axios.get(API_SERVER+"/api/entities"+id)
         .then(response => {
             dispatch(receiveEntities(response))
         }).catch(response => {

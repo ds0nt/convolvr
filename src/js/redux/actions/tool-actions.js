@@ -10,6 +10,7 @@ import {
     SELECT_TOOL
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addTool (data) {
     return {
@@ -39,7 +40,7 @@ export function fetchTools (id) {
          type: FETCH_TOOLS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/tools"+id)
+     return axios.get(API_SERVER+"/api/tools"+id)
         .then(response => {
             dispatch(receiveTools(response))
         }).catch(response => {

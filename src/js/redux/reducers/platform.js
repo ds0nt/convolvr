@@ -12,7 +12,8 @@ module.exports = function platforms (state = {
     home: null,
     user: [],
     friend: [],
-    group: []
+    group: [],
+    fetching: false
 }, action) {
   switch (action.type) {
     case ADD_PLATFORM:
@@ -27,11 +28,15 @@ module.exports = function platforms (state = {
         ]
     })
     case SET_HOME_PLATFORM:
-    
+        return Object.assign({}, state, {
+            home: action.data.home
+        })
     case DELETE_PLATFORM:
 
     case FETCH_PLATFORMS:
-
+        return Object.assign({}, state, {
+            fetching: true
+        })
     case FAILED_FETCH_PLATFORMS:
 
     case RECEIEVE_PLATFORMS:

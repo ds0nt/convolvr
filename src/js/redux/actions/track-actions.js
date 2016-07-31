@@ -8,6 +8,7 @@ import {
     DELETE_TRACK
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addTrack () {
     return {
@@ -20,7 +21,7 @@ export function fetchTracks (id) {
          type: FETCH_TRACKS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/tracks"+id)
+     return axios.get(API_SERVER+"/api/tracks"+id)
         .then(response => {
             dispatch(receiveTracks(response))
         }).catch(response => {

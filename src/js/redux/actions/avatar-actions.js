@@ -7,6 +7,7 @@ import {
     DELETE_AVATAR
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 var configure = {
   baseURL: 'https://convolvr.io',
@@ -26,7 +27,7 @@ export function fetchAvatars (id) {
             type: FETCH_AVATARS,
             id: id
         })
-     return axios.get("http://localhost:3600/api/avatars"+id)
+     return axios.get(API_SERVER+"/api/avatars"+id)
         .then(response => {
             dispatch(receiveAvatars(response))
         }).catch(response => {

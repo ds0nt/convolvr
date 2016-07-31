@@ -10,6 +10,7 @@ import {
     DELETE_USER
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addUser () {
     return {
@@ -34,7 +35,7 @@ export function fetchUsers (id) {
          type: FETCH_USERS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/users/"+id)
+     return axios.get(API_SERVER+"/api/users/"+id)
         .then(response => {
             dispatch(receiveUsers(response))
         }).catch(response => {

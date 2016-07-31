@@ -35,9 +35,10 @@ export default class UserInput {
 		canvas.onclick = function (event) {
 			var elem = event.target;
 			if (world.mode == "vr") {
-				elem.requestPointerLock();
-				uInput.toggleFullscreen();
+				
 			}
+			elem.requestPointerLock();
+			uInput.toggleFullscreen();
 		};
 
 		if ("onpointerlockchange" in document) {

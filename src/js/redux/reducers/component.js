@@ -28,7 +28,7 @@ module.exports = function components (state = {
     case RECIEVE_COMPONENTS:
         return Object.assign({}, state, {
                 instances: action.data
-            })
+        })
     case FAILED_FETCH_COMPONENTS:
 
     case UPDATE_COMPONENT:

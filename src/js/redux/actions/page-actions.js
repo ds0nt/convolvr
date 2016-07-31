@@ -7,6 +7,7 @@ import {
     DELETE_PAGE
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addPage () {
     return {
@@ -19,7 +20,7 @@ export function fetchPages (id) {
         type: FETCH_PAGES,
         id: id
      })
-     return axios.get("http://localhost:3600/api/pages"+id)
+     return axios.get(API_SERVER+"/api/pages"+id)
         .then(response => {
             dispatch(receivePages(response))
         }).catch(response => {
