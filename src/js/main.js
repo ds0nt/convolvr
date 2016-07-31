@@ -21,7 +21,7 @@ import { indigo500, indigo600, amber800, amber500 } from 'material-ui/styles/col
 // World
 import UserInput from './input/user-input.js';
 import io from 'socket.io-client'
-let socket = io(`https://convolvr.io:3680`)
+
 //import SocketEvents from './socket-events.js';
 //import WorldPhysics from './world/world-physics.js';
 import World from './world/world.js';
@@ -32,8 +32,8 @@ var token = localStorage.getItem("token"),
 		world,
 		avatar = null;
 
-	world = new World(socket);
-	userInput = new UserInput(socket);
+	world = new World();
+	userInput = new UserInput();
 	userInput.init(world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
 	world.connect("input", userInput);
 
