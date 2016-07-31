@@ -49,17 +49,21 @@ func main() {
 	socketServer.On("error", func(so socketio.Socket, err error) {
 		log.Println("error:", err)
 	})
-
 	http.Handle("/socket.io/", socketServer)
 
-	httpErr := http.ListenAndServe(":3080", nil) // if encryption isn't available, otherwise..
-	//httpErr := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
-
-	if httpErr != nil {
-		log.Fatal("ListenAndServe: ", httpErr)
+	if (settings.SSL) {
+		httpsErr := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
+		if httpsErr != nil {
+			log.Fatal("ListenAndServe: ", httpsErr)
+		}
 	} else {
-		log.Println("Battlecruiser Operational! port: "+settings.Port)
+		httpErr := http.ListenAndServe(":3080", nil)
+		if httpErr != nil {
+			log.Fatal("ListenAndServe: ", httpErr)
+		}
 	}
+
+
 
 	client := redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",
