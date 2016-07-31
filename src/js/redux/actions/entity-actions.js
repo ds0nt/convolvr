@@ -1,16 +1,17 @@
 import {
-    ADD_ENTITY,
-    FETCH_ENTITIES
-    RECEIVE_ENTITIES,
-    FAILED_FETCH_ENTITIES,
+    ENTITY_ADD,
+    ENTITIES_FETCH
+    ENTITIES_FETCH_DONE,
+    ENTITIES_FETCH_FAILED,
     UPDATE_ENTITY,
     DELETE_ENTITY
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addEntity (id, name, components) {
     return {
-        type: ADD_ENTITY,
+        type: ENTITY_ADD,
         id: id,
         name: name,
         components: components
@@ -19,26 +20,26 @@ export function addEntity (id, name, components) {
 export function fetchEntities (id) {
     return dispatch => {
      dispatch({
-         type: FETCH_ENTITIES,
+         type: ENTITIES_FETCH,
          id: id
      })
-     return axios.get("http://localhost:3600/api/entities"+id)
+     return axios.get(API_SERVER+"/api/entities"+id)
         .then(response => {
-            dispatch(receiveEntities(response))
+            dispatch(doneFetchEntities(response))
         }).catch(response => {
             dispatch(failedFetchEntities(response))
         });
    }
 }
-export function receiveEntities (entities) {
+export function doneFetchEntities (entities) {
     return {
-        type: RECEIVE_ENTITIES,
+        type: ENTITIES_FETCH_DONE,
         entities: entities
     }
 }
 export function failedFetchEntities (err) {
     return {
-        type: FAILED_FETCH_ENTITIES,
+        type: ENTITIES_FETCH_FAILED,
         err: err
     }
 }

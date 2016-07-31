@@ -2,16 +2,20 @@ console.log('🌀 Powering up...');
 // React
 import ReactDOM from 'react-dom';
 import React, { Component, PropTypes } from 'react';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 // Redux
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import makeStore from './redux/makeStore'
 import App from './containers/app'
+import HUD from './containers/hud'
 import { fetchPlatforms } from './redux/actions/platform-actions'
 import { fetchTracks } from './redux/actions/track-actions'
 import { fetchUsers } from './redux/actions/user-actions'
-let store = makeStore({});
+let store = makeStore(routerReducer);
+const history = syncHistoryWithStore(browserHistory, store)
 
 // UI
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -21,7 +25,7 @@ import { indigo500, indigo600, amber800, amber500 } from 'material-ui/styles/col
 // World
 import UserInput from './input/user-input.js';
 import io from 'socket.io-client'
-let socket = io(`https://convolvr.io:3680`)
+let socket = io(`localhost:3080`)
 //import SocketEvents from './socket-events.js';
 //import WorldPhysics from './world/world-physics.js';
 import World from './world/world.js';
@@ -56,7 +60,11 @@ const muiTheme = getMuiTheme({
 ReactDOM.render(
   (<Provider store={store}>
     <MuiThemeProvider muiTheme={muiTheme}>
-        <App />
+		<Router history={history}>
+	  		<Route path="/" component={App} >
+				<IndexRoute component={HUD}/>
+			</Route>
+		</Router>
     </MuiThemeProvider>
   </Provider>),
   document.getElementsByTagName('main')[0]

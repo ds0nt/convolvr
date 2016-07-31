@@ -7,6 +7,7 @@ import {
     DELETE_FILE
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addFile (name, src) {
     return {
@@ -21,7 +22,7 @@ export function fetchFiles (id) {
          type: FETCH_FILES,
          id: id
      })
-     return axios.get("http://localhost:3600/api/files"+id)
+     return axios.get(API_SERVER+"/api/files"+id)
         .then(response => {
             dispatch(receiveFiles(response))
         }).catch(response => {

@@ -3,11 +3,12 @@ export default class App extends Component {
   render() {
     var content = "";
     if (window.location.href.split("host/").length > 1) {
-    	content = <SignIn />;
+    	//content = <SignIn />;
     }
 
     return (
         <div className="root">
+            {this.props.children}
     	  	<video id="webcam" ></video>
     		<canvas id="webcam-canvas"></canvas>
             <div className="lightbox" style={{display: "none"}}></div>

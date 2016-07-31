@@ -9,6 +9,7 @@ import {
     DELETE_ROUTER
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addRouter () {
     return {
@@ -21,7 +22,7 @@ export function fetchRouters (id) {
          type: FETCH_ROUTERS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/routers"+id)
+     return axios.get(API_SERVER+"/api/routers"+id)
         .then(response => {
             dispatch(receiveRouters(response))
         }).catch(response => {

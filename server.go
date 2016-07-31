@@ -12,27 +12,6 @@ import (
 	config "github.com/SpaceHexagon/convolvr/config"
 )
 
-func initSockets () (*socketio.Server) {
-	server, err := socketio.NewServer(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	server.On("connection", func(so socketio.Socket) {
-		log.Println("on connection")
-		so.Join("chat")
-		so.On("chat message", func(msg string) {
-			log.Println("emit:", so.Emit("chat message", msg))
-			so.BroadcastTo("chat", "chat message", msg)
-		})
-		so.On("disconnection", func() {
-			log.Println("on disconnect")
-		})
-	})
-	server.On("error", func(so socketio.Socket, err error) {
-		log.Println("error:", err)
-	})
-	return server;
-}
 
 
 func main() {
@@ -52,24 +31,47 @@ func main() {
 	http.HandleFunc("/api/files", handleFiles)
 	http.HandleFunc("/api/messages", handleMessages)
 
-	http.Handle("/socket.io", initSockets())
-
-	err := http.ListenAndServe(":3080", nil) // if encryption isn't available, otherwise..
-	//err := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
-
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	} else {
-		log.Println("Battlecruiser Operational! port: "+settings.Port)
+	socketServer, socketErr := socketio.NewServer(nil)
+	if socketErr != nil {
+		log.Fatal(socketErr)
 	}
+	socketServer.On("connection", func(so socketio.Socket) {
+		log.Println("User Joined")
+		so.Join("chat")
+		so.On("chat:message", func(msg string) {
+			log.Println("emit:", so.Emit("chat:message", msg))
+			so.BroadcastTo("chat", "chat:message", msg)
+		})
+		so.On("disconnection", func() {
+			log.Println("User Quit")
+		})
+	})
+	socketServer.On("error", func(so socketio.Socket, err error) {
+		log.Println("error:", err)
+	})
+	http.Handle("/socket.io/", socketServer)
+
+	if (settings.SSL) {
+		httpsErr := http.ListenAndServeTLS(settings.Port, settings.Certificate, settings.Key, nil)
+		if httpsErr != nil {
+			log.Fatal("ListenAndServe: ", httpsErr)
+		}
+	} else {
+		httpErr := http.ListenAndServe(":3080", nil)
+		if httpErr != nil {
+			log.Fatal("ListenAndServe: ", httpErr)
+		}
+	}
+
+
 
 	client := redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",
 			Password: "",
 			DB:       0,
 	})
-	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)	
+	pong, dbErr := client.Ping().Result()
+	fmt.Println(pong, dbErr)
 }
 
 func handleUsers (w http.ResponseWriter, r *http.Request) {

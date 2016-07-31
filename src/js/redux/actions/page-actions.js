@@ -1,12 +1,13 @@
 import {
     ADD_PAGE,
-    FETCH_PAGES,
-    RECEIVE_PAGES,
-    FAILED_FETCH_PAGES,
+    PAGES_FETCH,
+    PAGES_FETCH_DONE,
+    PAGES_FETCH_FAIL,
     UPDATE_PAGE,
     DELETE_PAGE
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addPage () {
     return {
@@ -16,26 +17,26 @@ export function addPage () {
 export function fetchPages (id) {
     return dispatch => {
      dispatch({
-        type: FETCH_PAGES,
+        type: PAGES_FETCH,
         id: id
      })
-     return axios.get("http://localhost:3600/api/pages"+id)
+     return axios.get(API_SERVER+"/api/pages"+id)
         .then(response => {
-            dispatch(receivePages(response))
+            dispatch(doneFetchPages(response))
         }).catch(response => {
             dispatch(failedFetchPages(response))
         });
    }
 }
-export function receivePages (pages) {
+export function doneFetchPages (pages) {
     return {
-        type: RECEIVE_PAGES,
+        type: PAGES_FETCH_DONE,
         pages: pages
     }
 }
 export function failedFetchPages (err) {
     return {
-        type: FAILED_FETCH_PAGES,
+        type: PAGES_FETCH_FAIL,
         err: err
     }
 }

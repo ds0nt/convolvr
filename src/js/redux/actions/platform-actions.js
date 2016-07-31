@@ -1,16 +1,17 @@
 import {
-    ADD_PLATFORM,
+    PLATFORM_ADD,
     FETCH_PLATFORMS,
     RECEIVE_PLATFORMS,
-    FAILED_FETCH_PLATFORMS,
+    PLATFORMS_FETCH_FAILED,
     UPDATE_PLATFORM,
     DELETE_PLATFORM
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addPlatform () {
     return {
-        type: ADD_PLATFORM
+        type: PLATFORM_ADD
     }
 }
 export function fetchPlatforms (id) {
@@ -19,15 +20,15 @@ export function fetchPlatforms (id) {
             type: FETCH_PLATFORMS,
             id: id
          });
-     return axios.get("http://localhost:3600/api/platforms"+id)
+     return axios.get(API_SERVER+"/api/platforms"+id)
         .then(response => {
-            dispatch(receivePlatforms(response))
+            dispatch(doneFetchPlatforms(response))
         }).catch(response => {
             dispatch(failedFetchPlatforms(response))
         });
    }
 }
-export function receivePlatforms (platforms) {
+export function doneFetchPlatforms (platforms) {
     return {
         type: RECEIVE_PLATFORMS,
         platforms: platforms
@@ -35,7 +36,7 @@ export function receivePlatforms (platforms) {
 }
 export function failedFetchPlatforms (err) {
     return {
-        type: FAILED_FETCH_PLATFORMS,
+        type: PLATFORMS_FETCH_FAILED,
         err: err
     }
 }

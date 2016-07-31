@@ -1,15 +1,16 @@
 import {
     ADD_PAGE,
-    FETCH_PAGES,
-    FAILED_FETCH_PAGES,
-    RECIEVE_PAGES,
+    PAGES_FETCH,
+    PAGES_FETCH_FAIL,
+    PAGES_FETCH_DONE,
     UPDATE_PAGE,
     DELETE_PAGE
 } from '../constants/action-types';
 
 module.exports = function pages (state = {
     currentPage: "",
-    all: []
+    all: [],
+    fetching: false
 }, action) {
   switch (action.type) {
     case ADD_PAGE:
@@ -23,25 +24,19 @@ module.exports = function pages (state = {
       ]
     case DELETE_PAGE:
 
-    case FETCH_PAGES:
+    case PAGES_FETCH:
+        return Object.assign({}, state, {
+            fetching: true
+        })
+    case PAGES_FETCH_FAIL:
 
-    case FAILED_FETCH_PAGES:
-
-    case RECIEVE_PAGES:
+    case PAGES_FETCH_DONE:
     return Object.assign({}, state, {
-            all: action.pages
+            all: action.pages,
+            fetching: false
         })
     case UPDATE_PAGE:
-    return state.map((page, index) => {
-      if (index === action.index) {
-        return Object.assign({}, page, {
-            title: action.title,
-            body: action.body,
-            nav: action.nav
-        })
-      }
-      return page;
-    })
+
     default:
       return state;
   }

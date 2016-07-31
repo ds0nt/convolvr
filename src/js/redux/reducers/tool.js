@@ -1,5 +1,5 @@
 import {
-    ADD_TOOL,
+    TOOL_ADD,
     FETCH_TOOLS,
     RECEIVE_TOOLS,
     FAILED_FETCH_TOOLS,
@@ -11,7 +11,7 @@ import {
 
 module.exports = function tools (state = [], action) {
   switch (action.type) {
-    case ADD_TOOL:
+    case TOOL_ADD:
       return [
         ...state,
         {

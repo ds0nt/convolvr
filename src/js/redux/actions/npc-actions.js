@@ -7,6 +7,7 @@ import {
     DELETE_NPC
 } from '../constants/action-types';
 import axios from 'axios';
+import { API_SERVER } from '../../config.js'
 
 export function addNPC () {
     return {
@@ -19,7 +20,7 @@ export function fetchNPCs (id) {
          type: FETCH_NPCS,
          id: id
      })
-     return axios.get("http://localhost:3600/api/files"+id)
+     return axios.get(API_SERVER+"/api/files"+id)
         .then(response => {
             dispatch(receiveNPCs(response))
         }).catch(response => {

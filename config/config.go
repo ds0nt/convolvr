@@ -2,6 +2,7 @@
 package config
 
 type Configuration struct {
+    SSL bool
     Port string
     Key string
     Certificate string
@@ -9,6 +10,7 @@ type Configuration struct {
 
 func GetConfig () Configuration {
     data := Configuration{
+        SSL: false,
         Port: ":443",
         Key: "",
         Certificate: "",
