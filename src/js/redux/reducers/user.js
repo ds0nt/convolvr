@@ -1,20 +1,24 @@
 import {
-    ADD_USER,
-    FETCH_USERS,
-    RECIEVE_USERS,
-    FAILED_FETCH_USERS,
+    USER_ADD,
+    USERS_FETCH,
+    USERS_FETCH_DONE,
+    USERS_FETCH_FAIL,
     USER_CONNECT,
     USER_DISCONNECT,
     UPDATE_USER,
-    DELETE_USER
+    DELETE_USER,
+    LOGIN_FETCH,
+    LOGIN_DONE,
+    LOGIN_FAIL
 } from '../constants/action-types';
 
 module.exports = function users (state = {
     current: null,
-    all: []
+    all: [],
+    fetching: false
 }, action) {
   switch (action.type) {
-    case ADD_USER:
+    case USER_ADD:
 
       return [
 
@@ -34,23 +38,32 @@ module.exports = function users (state = {
 
     case DELETE_USER:
 
-    case FETCH_USERS:
-
-    case RECIEVE_USERS:
-
-    case FAILED_FETCH_USERS:
+    case USERS_FETCH:
+        return Object.assign({}, state, {
+            fetching: true
+        })
+    case USERS_FETCH_DONE:
+        return Object.assign({}, state, {
+            fetching: false,
+            all: action.data.users
+        })
+    case USERS_FETCH_FAIL:
 
     case UPDATE_USER:
-    return state.all.map((user, index) => {
-      if (index === action.index) {
-        return Object.assign({}, user, {
-            name: action.name,
-            data: action.data,
-            pic: action.pic
-        })
-      }
-      return user;
+    case LOGIN_FETCH:
+    return Object.assign({}, state, {
+        fetching: true
     })
+    case LOGIN_DONE:
+    return Object.assign({}, state, {
+            fetching: false,
+            current: action.data.user
+    })
+    case LOGIN_FAIL:
+    return Object.assign({}, state, {
+        fetching: false
+    })
+
     default:
       return state;
   }

@@ -1,8 +1,8 @@
 import {
-    ADD_ENTITY,
-    FETCH_ENTITIES,
-    FAILED_FETCH_ENTITIES,
-    RECEIVE_ENTITIES,
+    ENTITY_ADD,
+    ENTITIES_FETCH,
+    ENTITIES_FETCH_FAILED,
+    ENTITIES_FETCH_DONE,
     UPDATE_ENTITY,
     DELETE_ENTITY
 } from '../constants/action-types';
@@ -13,7 +13,7 @@ module.exports = function entities (state = {
     current: null
 }, action) {
   switch (action.type) {
-    case ADD_ENTITY:
+    case ENTITY_ADD:
         return Object.assign({}, state, {
             instances: [
                 ...state.instances,
@@ -26,14 +26,14 @@ module.exports = function entities (state = {
         })
     case DELETE_ENTITY:
 
-    case FETCH_ENTITIES:
+    case ENTITIES_FETCH:
 
-    case RECEIVE_ENTITIES:
+    case ENTITIES_FETCH_DONE:
         return Object.assign({}, state, {
             types: action.data.types,
             instances: action.data.instances
         })
-    case FAILED_FETCH_ENTITIES:
+    case ENTITIES_FETCH_FAILED:
 
     case UPDATE_ENTITY:
         return state.map((entity, index) => {

@@ -1,5 +1,5 @@
 import {
-    ADD_TOOL,
+    TOOL_ADD,
     FETCH_TOOLS,
     RECEIVE_TOOLS,
     FAILED_FETCH_TOOLS,
@@ -14,7 +14,7 @@ import { API_SERVER } from '../../config.js'
 
 export function addTool (data) {
     return {
-        type: ADD_TOOL,
+        type: TOOL_ADD,
         data: data
     }
 }

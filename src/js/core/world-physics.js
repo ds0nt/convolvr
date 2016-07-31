@@ -4,7 +4,7 @@ export default class WorldPhysics {
 	}
 
 	init () {
-		let worker = new Worker('/js/physics.js');
+		let worker = new Worker('/workers/physics.js');
 	      worker.onmessage = function (event) {
 	        let data = JSON.parse(event.data),
 	          sys = system,

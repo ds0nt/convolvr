@@ -1,9 +1,9 @@
 /* structure actions */
 import {
-    ADD_TRACK,
-    FETCH_TRACKS,
-    RECEIVE_TRACKS,
-    FAILED_FETCH_TRACKS,
+    TRACK_ADD,
+    TRACKS_FETCH,
+    TRACKS_FETCH_DONE,
+    TRACKS_FETCH_FAIL,
     UPDATE_TRACK,
     DELETE_TRACK
 } from '../constants/action-types';
@@ -12,32 +12,32 @@ import { API_SERVER } from '../../config.js'
 
 export function addTrack () {
     return {
-        type: ADD_TRACK
+        type: TRACK_ADD
     }
 }
 export function fetchTracks (id) {
     return dispatch => {
      dispatch({
-         type: FETCH_TRACKS,
+         type: TRACKS_FETCH,
          id: id
      })
      return axios.get(API_SERVER+"/api/tracks"+id)
         .then(response => {
-            dispatch(receiveTracks(response))
+            dispatch(doneFetchTracks(response))
         }).catch(response => {
             dispatch(failedFetchTracks(response))
         });
    }
 }
-export function receiveTracks (tracks) {
+export function doneFetchTracks (tracks) {
     return {
-        type: RECEIVE_TRACKS,
+        type: TRACKS_FETCH_DONE,
         tracks: tracks
     }
 }
 export function failedFetchTracks (err) {
     return {
-        type: FAILED_FETCH_TRACKS,
+        type: TRACKS_FETCH_FAIL,
         err: err
     }
 }

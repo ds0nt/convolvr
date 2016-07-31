@@ -1,8 +1,8 @@
 import {
-    ADD_COMPONENT,
-    FETCH_COMPONENTS,
-    RECEIVE_COMPONENTS,
-    FAILED_FETCH_COMPONENTS,
+    COMPONENT_ADD,
+    COMPONENTS_FETCH,
+    COMPONENTS_FETCH_DONE,
+    COMPONENTS_FETCH_FAILED,
     UPDATE_COMPONENT,
     DELETE_COMPONENT
 } from '../constants/action-types';
@@ -11,7 +11,7 @@ import { API_SERVER } from '../../config.js'
 
 export function addComponent (name, data) {
     return {
-        type: ADD_COMPONENT,
+        type: COMPONENT_ADD,
         name: name,
         data: data
     }
@@ -19,26 +19,26 @@ export function addComponent (name, data) {
 export function fetchComponents (id) {
     return dispatch => {
      dispatch({
-         type: FETCH_COMPONENTS,
+         type: COMPONENTS_FETCH,
          id: id
      })
      return axios.get(API_SERVER+"/api/components"+id)
         .then(response => {
-            dispatch(receiveComponents(response))
+            dispatch(doneFetchComponents(response))
         }).catch(response => {
             dispatch(failedFetchComponents(response))
         });
    }
 }
-export function receiveComponents (components) {
+export function doneFetchComponents (components) {
     return {
-        type: RECEIVE_COMPONENTS,
+        type: COMPONENTS_FETCH_DONE,
         components: components
     }
 }
 export function failedFetchComponents (err) {
     return {
-        type: FAILED_FETCH_COMPONENTS,
+        type: COMPONENTS_FETCH_FAILED,
         err: err
     }
 }

@@ -1,8 +1,8 @@
 import {
     ADD_ROUTER,
-    GET_ROUTER,
+    ROUTER_FETCH,
     GET_ALL_ROUTERS,
-    UPDATE_ROUTER, 
+    UPDATE_ROUTER,
     DELETE_ROUTER
 } from '../constants/action-types';
 
@@ -19,7 +19,7 @@ module.exports = function routers (state = [], action) {
       ]
     case DELETE_ROUTER:
 
-    case GET_ROUTER:
+    case ROUTER_FETCH:
 
     case GET_ALL_ROUTERS:
 

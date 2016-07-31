@@ -1,8 +1,8 @@
 import {
-    ADD_COMPONENT,
-    FETCH_COMPONENTS,
-    RECIEVE_COMPONENTS,
-    FAILED_FETCH_COMPONENTS,
+    COMPONENT_ADD,
+    COMPONENTS_FETCH,
+    COMPONENTS_FETCH_DONE,
+    COMPONENTS_FETCH_FAILED,
     UPDATE_COMPONENT,
     DELETE_COMPONENT
 } from '../constants/action-types';
@@ -10,10 +10,11 @@ import {
 module.exports = function components (state = {
     instances: [],
     types: [],
-    current: null
+    current: null,
+    fetching: false
 }, action) {
   switch (action.type) {
-    case ADD_COMPONENT:
+    case COMPONENT_ADD:
       return [
         ...state,
         {
@@ -23,24 +24,21 @@ module.exports = function components (state = {
       ]
     case DELETE_COMPONENT:
 
-    case FETCH_COMPONENTS:
-
-    case RECIEVE_COMPONENTS:
+    case COMPONENTS_FETCH:
         return Object.assign({}, state, {
-                instances: action.data
+            fetching: true
         })
-    case FAILED_FETCH_COMPONENTS:
-
+    case COMPONENTS_FETCH_DONE:
+        return Object.assign({}, state, {
+                instances: action.data,
+                fetching: false
+        })
+    case COMPONENTS_FETCH_FAILED:
+        return Object.assign({}, state, {
+            fetching: false
+        })
     case UPDATE_COMPONENT:
-    return state.map((component, index) => {
-      if (index === action.id) {
-        return Object.assign({}, component, {
-          name: action.url,
-          data: action.data
-        })
-      }
-      return component;
-    })
+
     default:
       return state;
   }
