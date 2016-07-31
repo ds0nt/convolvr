@@ -1,8 +1,9 @@
 import Avatar from './avatars/default.js';
 import WorldPhysics from '../core/world-physics.js';
+import {send} from '../network/socket'
 
 export default class World {
-	constructor(socket, userInput) {
+	constructor(userInput = false) {
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),
 			renderer = new THREE.WebGLRenderer(),
@@ -29,7 +30,6 @@ export default class World {
 		}
 		this.camera = camera;
 		this.mobile = mobile;
-		this.socket = socket;
 		this.userInput = userInput;
 		this.sendUpdatePacket = 0;
 		this.capturing = false;
@@ -43,39 +43,39 @@ export default class World {
 		document.body.appendChild( renderer.domElement );
 		renderer.domElement.setAttribute("id", "viewport");
 		renderer.setClearColor(0x241631);
-		camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
+				camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
 
-		skyShaderMat = new THREE.ShaderMaterial( {
-			side: 1,
-			fog: false,
-			uniforms: {
-				time: { value: 1.0 }
-			},
-			vertexShader: document.getElementById('sky-vertex').textContent,
-			fragmentShader: document.getElementById('sky-fragment').textContent
+				skyShaderMat = new THREE.ShaderMaterial( {
+					side: 1,
+					fog: false,
+					uniforms: {
+						time: { value: 1.0 }
+					},
+					vertexShader: document.getElementById('sky-vertex').textContent,
+					fragmentShader: document.getElementById('sky-fragment').textContent
 
-		} );
+				} );
 
-		this.ground = new THREE.Object3D();
-		this.ground.rotation.x = -Math.PI /2;
-		this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyShaderMat);
-		this.skybox.add(light);
-		scene.add(core);
-		core.position.set(0, 2000, 0);
-		light.position.set(0, 20000, 0);
-		scene.add(this.skybox);
-		this.skybox.position.set(camera.position.x, 0, camera.position.z);
+				this.ground = new THREE.Object3D();
+				this.ground.rotation.x = -Math.PI /2;
+				this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyShaderMat);
+				this.skybox.add(light);
+				scene.add(core);
+				core.position.set(0, 2000, 0);
+				light.position.set(0, 20000, 0);
+				scene.add(this.skybox);
+				this.skybox.position.set(camera.position.x, 0, camera.position.z);
 
-		userInput.init(this, camera, this.user);
-		this.worldPhysics = new WorldPhysics();
-		this.worldPhysics.init(self);
+				userInput.init(this, camera, this.user);
+				this.worldPhysics = new WorldPhysics();
+				this.worldPhysics.init(self);
 
-		this.core = {
-			physics: this.worldPhysics.worker,
-			// audio: this.worldAudio.worker,
-			// video: this.worldVideo.worker,
-			// npc: this.npcLogic.worker
-		}
+				this.core = {
+					physics: this.worldPhysics.worker,
+					// audio: this.worldAudio.worker,
+					// video: this.worldVideo.worker,
+					// npc: this.npcLogic.worker
+				}
 
 		three = this.three = {
 			world: this,
@@ -95,13 +95,12 @@ export default class World {
 			timeout: 1000,
 			headers: {'x-access-token': localStorage.getItem("token")}
 		};
-
+		
 		window.onresize = function () {
 			three.renderer.setSize(window.innerWidth, window.innerHeight);
 			three.camera.aspect = innerWidth / innerHeight;
 			three.camera.updateProjectionMatrix();
 		}
-
 	}
 
 	render (last) {
@@ -145,12 +144,17 @@ export default class World {
 						quat: [arm.quaternion.x, arm.quaternion.y, arm.quaternion.z, arm.quaternion.w] });
 					});
 				}
-				this.socket.emit('user update', {username:sys.username, image: sys.webcamImage, imageSize: imageSize, arms: arms, position: {x:camera.position.x, y:camera.position.y, z: camera.position.z},
-				quaternion: {x: camera.quaternion.x, y: camera.quaternion.y, z: camera.quaternion.z, w:camera.quaternion.w}});
+				send('/update', {
+					username:sys.username,
+					image: sys.webcamImage,
+					imageSize: imageSize,
+					arms: arms,
+					position: {x:camera.position.x, y:camera.position.y, z: camera.position.z},
+					quaternion: {x: camera.quaternion.x, y: camera.quaternion.y, z: camera.quaternion.z, w:camera.quaternion.w}
+				});
 					if (sys.capturing) {
 						sys.webcamImage = "";
 					}
-
 				}
 
 				core.rotation.y += 0.005;

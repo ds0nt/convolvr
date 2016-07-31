@@ -25,7 +25,7 @@ import { indigo500, indigo600, amber800, amber500 } from 'material-ui/styles/col
 // World
 import UserInput from './input/user-input.js';
 import io from 'socket.io-client'
-let socket = io(`localhost:3080`)
+
 //import SocketEvents from './socket-events.js';
 //import WorldPhysics from './world/world-physics.js';
 import World from './world/world.js';
@@ -36,9 +36,8 @@ var token = localStorage.getItem("token"),
 		world,
 		avatar = null;
 
-
-	userInput = new UserInput(socket);
-	world = new World(socket, userInput);
+	userInput = new UserInput();
+	world = new World(userInput);
 	userInput.init(world, world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
 	userInput.rotationVector = {x: 6.153333333333329, y: -21.09666666666679, z: 0};
 //store.dispatch(fetchPlatforms());
