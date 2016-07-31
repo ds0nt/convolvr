@@ -1,7 +1,8 @@
 import Avatar from './avatars/default.js';
+import {send} from '../network/socket'
 
 export default class World {
-	constructor(socket, userInput) {
+	constructor(userInput = false) {
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),
 			renderer = new THREE.WebGLRenderer(),
@@ -25,7 +26,6 @@ export default class World {
 			velocity: new THREE.Vector3()
 		}
 		this.mobile = mobile;
-		this.socket = socket;
 		this.userInput = userInput;
 		this.sendUpdatePacket = 0;
 		this.capturing = false;
@@ -38,7 +38,9 @@ export default class World {
 		renderer.domElement.setAttribute("id", "viewport");
 		renderer.setClearColor(0x231344);
 		camera.position.set(0, 0, 15);
-		userInput.init(this, camera, this.user);
+		if (!!userInput) {
+			userInput.init(this, camera, this.user);
+		}
 
 		// init sky with shaders.... work in progress
 		this.ground = new THREE.Object3D();
@@ -67,8 +69,10 @@ export default class World {
 			timeout: 1000,
 			headers: {'x-access-token': localStorage.getItem("token")}
 		};
+	}
 
-
+	connect(userInput) {
+		userInput.init(this, this.three.camera, this.user);
 	}
 
 	render (last) {
@@ -112,12 +116,17 @@ export default class World {
 						quat: [arm.quaternion.x, arm.quaternion.y, arm.quaternion.z, arm.quaternion.w] });
 					});
 				}
-				this.socket.emit('user update', {username:sys.username, image: sys.webcamImage, imageSize: imageSize, arms: arms, position: {x:camera.position.x, y:camera.position.y, z: camera.position.z},
-				quaternion: {x: camera.quaternion.x, y: camera.quaternion.y, z: camera.quaternion.z, w:camera.quaternion.w}});
+				send('/update', {
+					username:sys.username,
+					image: sys.webcamImage,
+					imageSize: imageSize,
+					arms: arms,
+					position: {x:camera.position.x, y:camera.position.y, z: camera.position.z},
+					quaternion: {x: camera.quaternion.x, y: camera.quaternion.y, z: camera.quaternion.z, w:camera.quaternion.w}
+				});
 					if (sys.capturing) {
 						sys.webcamImage = "";
 					}
-
 				}
 
 				sun.rotation.y += 0.005;
