@@ -1,4 +1,6 @@
-var websocket = new WebSocket("ws://"+location.host+"/connect")
+import { secure } from '../config.js'
+
+var websocket = new WebSocket(secure ? 'wss:' : 'ws:'+"//"+location.host+"/connect")
 
 let handlers = {}
 
