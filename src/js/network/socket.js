@@ -4,6 +4,9 @@ let handlers = {}
 
 websocket.onmessage = (message) => {
   let data = JSON.parse(message.data)
+  if (!!window.LOG_MSG) {
+    console.dir(data)
+  }
   if (!!handlers[data.p]) {
     handlers[data.p](data)
   }
