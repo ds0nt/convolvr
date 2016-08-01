@@ -12,7 +12,9 @@ import (
 
 type Server struct {
 	sync.Mutex
-	handlers map[string]Handler
+	handlers          map[string]Handler
+	connectHandler    ConnectHandler
+	disconnectHandler DisconnectHandler
 }
 
 func NewServer() *Server {
@@ -23,11 +25,25 @@ func NewServer() *Server {
 }
 
 type Handler func(r *Request, client *Client)
+type ConnectHandler func(client *Client)
+type DisconnectHandler func(client *Client)
 
 func (u *Server) Handle(path string, handler Handler) {
 	u.Lock()
 	defer u.Unlock()
 	u.handlers[path] = handler
+}
+
+func (u *Server) HandleConnect(handler ConnectHandler) {
+	u.Lock()
+	defer u.Unlock()
+	u.connectHandler = handler
+}
+
+func (u *Server) HandleDisconnect(handler DisconnectHandler) {
+	u.Lock()
+	defer u.Unlock()
+	u.disconnectHandler = handler
 }
 
 type BaseMessage struct {
@@ -89,6 +105,9 @@ func (u *Server) Server(ws *websocket.Conn) {
 	defer client.Close()
 	errCh := make(chan error)
 	defer close(errCh)
+
+	go u.connectHandler(client)
+	defer u.disconnectHandler(client)
 
 	go func() {
 		for {
