@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -18,7 +19,7 @@ var universe *univs.Universe
 
 func makeWebSocketAPI() websocket.Handler {
 
-	universeStore := univs.NewKafkaStore([]string{"localhost:9092"})
+	universeStore := univs.NewKafkaStore([]string{os.Getenv("KAFKA_ADDR")})
 	universe = univs.NewUniverse(universeStore)
 
 	server := socket.NewServer()
