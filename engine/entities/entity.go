@@ -15,7 +15,7 @@ type Entity struct {
 func NewEntity() *Entity {
 	return &Entity{
 		Id:         uuid.NewUUID().String(),
-		Aspects:	[]string,
+		Aspects:	[]string{},
 		Position:   &types.Position{},
 		Quaternion: &types.Quaternion{},
 	}

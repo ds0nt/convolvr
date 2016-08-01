@@ -2,6 +2,7 @@ package api
 
 import (
 	//"log"
+	"os"
 	"sync"
 	"time"
 
@@ -9,11 +10,18 @@ import (
 
 	"github.com/SpaceHexagon/convolvr/engine/entities"
 	"github.com/SpaceHexagon/convolvr/engine/types"
+	univs "github.com/SpaceHexagon/convolvr/engine/universe"
 	"github.com/SpaceHexagon/convolvr/socket"
 	"github.com/pkg/errors"
 )
 
+var universe *univs.Universe
+
 func makeWebSocketAPI() websocket.Handler {
+
+	universeStore := univs.NewKafkaStore([]string{os.Getenv("KAFKA_ADDR")})
+	universe = univs.NewUniverse(universeStore)
+
 	server := socket.NewServer()
 	server.HandleConnect(onClientConnect)
 	server.HandleDisconnect(onClientDisconnect)
