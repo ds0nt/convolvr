@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Serve(port string) {
+func Serve(port string, cert string, key string) {
 
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.HandleFunc("/api/users", handleUsers)
@@ -27,8 +27,11 @@ func Serve(port string) {
 
 	http.Handle("/connect", makeWebSocketAPI())
 	go startUpdater()
-
-	log.Fatal("ListenAndServe", http.ListenAndServe(port, nil))
+	if (port == ":443") {
+		log.Fatal("ListenAndServe", http.ListenAndServeTLS(port, cert, key, nil))
+	} else {
+		log.Fatal("ListenAndServe", http.ListenAndServe(port, nil))
+	}
 }
 
 func handleUsers(w http.ResponseWriter, r *http.Request) {

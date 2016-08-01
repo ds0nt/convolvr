@@ -92,7 +92,6 @@ func onClientUpdate(r *socket.Request, c *socket.Client) {
 		p.RightArm.Entity.Update(params.Arms[1].Position, params.Arms[1].Quaternion)
 	}
 
-	// log.Println(params.Position.X, params.Position.Y, params.Position.Z)
 }
 
 type pushEntityUpdate struct {

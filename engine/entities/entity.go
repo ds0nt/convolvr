@@ -7,6 +7,7 @@ import (
 
 type Entity struct {
 	Id         string            `json:"id"`
+	Aspects    []string 		 `json:"aspects"`
 	Position   *types.Position   `json:"pos"`
 	Quaternion *types.Quaternion `json:"quat"`
 }
@@ -14,6 +15,7 @@ type Entity struct {
 func NewEntity() *Entity {
 	return &Entity{
 		Id:         uuid.NewUUID().String(),
+		Aspects:	[]string{},
 		Position:   &types.Position{},
 		Quaternion: &types.Quaternion{},
 	}

@@ -1,1 +1,2 @@
-export const API_SERVER = "localhost:3080";
+export const API_SERVER = "localhost:2000";
+export const secure = false;

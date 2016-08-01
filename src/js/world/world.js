@@ -90,12 +90,6 @@ export default class World {
 
 		this.render(0);
 
-		var configure = {
-			baseURL: 'https://convolvr.io',
-			timeout: 1000,
-			headers: {'x-access-token': localStorage.getItem("token")}
-		};
-		
 		window.onresize = function () {
 			three.renderer.setSize(window.innerWidth, window.innerHeight);
 			three.camera.aspect = innerWidth / innerHeight;
@@ -134,7 +128,7 @@ export default class World {
 			}
 			sys.sendUpdatePacket = 0;
 		}
-
+		sys.skybox.material.uniforms.time.value += delta;
 		sys.sendUpdatePacket += 1;
 		if (sys.sendUpdatePacket %(2*(mobile ? 2 : 1)) == 0 && sys.mode == "vr") {
 
