@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"os"
 	"sync"
 	"time"
@@ -21,6 +20,7 @@ func makeWebSocketAPI() websocket.Handler {
 
 	universeStore := univs.NewKafkaStore([]string{os.Getenv("KAFKA_ADDR")})
 	universe = univs.NewUniverse(universeStore)
+	go universe.Start()
 
 	server := socket.NewServer()
 	server.HandleConnect(onClientConnect)
@@ -67,6 +67,7 @@ func onClientConnect(c *socket.Client) {
 	defer clientPlayerMutex.Unlock()
 	player := entities.NewPlayer()
 	clientPlayers[c] = player
+	universe.AddEntity(player.Entity)
 }
 
 func onClientDisconnect(c *socket.Client) {
@@ -91,7 +92,7 @@ func onClientUpdate(r *socket.Request, c *socket.Client) {
 		p.RightArm.Entity.Update(params.Arms[1].Position, params.Arms[1].Quaternion)
 	}
 
-	log.Println(params.Position.X, params.Position.Y, params.Position.Z)
+	// log.Println(params.Position.X, params.Position.Y, params.Position.Z)
 }
 
 type pushEntityUpdate struct {
