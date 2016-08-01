@@ -15,7 +15,11 @@ func main() {
 
 	go func() {
 		defer close(done)
-		api.Serve(settings.Port)
+		var port = settings.Port
+		if (settings.SSL) {
+			port = settings.TLSPort
+		}
+		api.Serve(port, settings.Certificate, settings.Key)	
 	}()
 
 	// client := redis.NewClient(&redis.Options{
