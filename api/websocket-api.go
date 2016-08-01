@@ -9,11 +9,18 @@ import (
 
 	"github.com/SpaceHexagon/convolvr/engine/entities"
 	"github.com/SpaceHexagon/convolvr/engine/types"
+	univs "github.com/SpaceHexagon/convolvr/engine/universe"
 	"github.com/SpaceHexagon/convolvr/socket"
 	"github.com/pkg/errors"
 )
 
+var universe *univs.Universe
+
 func makeWebSocketAPI() websocket.Handler {
+
+	universeStore := univs.NewKafkaStore([]string{"localhost:9092"})
+	universe = univs.NewUniverse(universeStore)
+
 	server := socket.NewServer()
 	server.HandleConnect(onClientConnect)
 	server.HandleDisconnect(onClientDisconnect)
