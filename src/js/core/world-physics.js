@@ -3,11 +3,11 @@ export default class WorldPhysics {
 		this.worker = null;
 	}
 
-	init () {
-		let worker = new Worker('/workers/physics.js');
+	init (world) {
+		let worker = new Worker('/js/workers/physics.js');
 	      worker.onmessage = function (event) {
 	        let data = JSON.parse(event.data),
-	          sys = system,
+	          sys = world,
 	          cam = three.camera,
 	          user = sys.user,
 	          position = [],
@@ -19,7 +19,7 @@ export default class WorldPhysics {
 	          ','+cam.position.z+
 	          '],"velocity":['+user.velocity.x+
 	          ','+user.velocity.y+
-	          ','+user.velocity.z+'], "coords": ['+sys.chunkCoords[0]+','+sys.chunkCoords[1]+','+sys.chunkCoords[2]+']}}');
+	          ','+user.velocity.z+'] }}');
 
 	        } else if (data.command == "collision") {
 	          console.log("collision");

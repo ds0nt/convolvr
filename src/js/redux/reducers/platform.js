@@ -4,6 +4,7 @@ import {
     PLATFORMS_FETCH_FAILED,
     RECEIEVE_PLATFORMS,
     SET_HOME_PLATFORM,
+    PLATFORM_HOME_INIT,
     UPDATE_PLATFORM,
     DELETE_PLATFORM
 } from '../constants/action-types';
@@ -30,6 +31,10 @@ module.exports = function platforms (state = {
     case SET_HOME_PLATFORM:
         return Object.assign({}, state, {
             home: action.data.home
+        })
+    case PLATFORM_HOME_INIT:
+        return Object.assign({
+            home: action.platform
         })
     case DELETE_PLATFORM:
 

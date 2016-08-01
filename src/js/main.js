@@ -11,9 +11,7 @@ import { createStore } from 'redux'
 import makeStore from './redux/makeStore'
 import App from './containers/app'
 import HUD from './containers/hud'
-import { fetchPlatforms } from './redux/actions/platform-actions'
-import { fetchTracks } from './redux/actions/track-actions'
-import { fetchUsers } from './redux/actions/user-actions'
+
 let store = makeStore(routerReducer);
 const history = syncHistoryWithStore(browserHistory, store)
 
@@ -40,9 +38,6 @@ var token = localStorage.getItem("token"),
 	world = new World(userInput);
 	userInput.init(world, world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
 	userInput.rotationVector = {x: 6.153333333333329, y: -21.09666666666679, z: 0};
-//store.dispatch(fetchPlatforms());
-//store.dispatch(fetchTracks());
-//store.dispatch(fetchUsers());
 
 const muiTheme = getMuiTheme({
       palette: {
