@@ -10,8 +10,17 @@ import axios from 'axios';
 import { API_SERVER } from '../../config.js'
 
 export function addNPC () {
+    let physicsWorld = three.world.worldPhysics.worker; // until I can find a better way to access this
+
     return {
         type: ADD_NPC
+    }
+}
+export function deleteNPC (id) {
+    let physicsWorld = three.world.worldPhysics.worker; // until I can find a better way to access this
+
+    return {
+        type: DELETE_NPC
     }
 }
 export function fetchNPCs (id) {
@@ -45,10 +54,5 @@ export function updateNPC (id, data) {
         type: UPDATE_NPC,
         data: data,
         id: id
-    }
-}
-export function deleteNPC (id) {
-    return {
-        type: DELETE_NPC
     }
 }

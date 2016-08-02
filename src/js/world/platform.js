@@ -10,6 +10,20 @@ export default class Platform {
       if (!!data && !!data.position) {
           mesh.position.set(data.position.x, data.position.y, data.position.z);
       } else {
+          if (!data) {
+              data = {
+                  position: {
+                      x: mesh.position.x,
+                      y: mesh.position.y,
+                      z: mesh.position.z
+                  },
+                  size: {
+                      x: 128000,
+                      y: 128000,
+                      z: 2048
+                  }
+              }
+          }
           mesh.position.set(0, -4000, 0);
       }
 
