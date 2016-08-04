@@ -83,36 +83,38 @@
             }
 
             void main( void ) {
-                float depth = 1.0-(abs(0.5 - vUv.y) * 4.0);
-                float opacity =  1.0-(abs(0.5 - vUv.x) * 2.0);
-               float a = noise(vec3(vUv.x, vUv.y, 1.0));
-               float a2 = noise(vec3(vUv.x * 10.0, vUv.y * 10.0, 1.0));
-               float a3 = noise(vec3(vUv.x * 40.0, vUv.y * 40.0, 1.0));
-               float a4 = noise(vec3(vUv.x * 560.0, vUv.y * 140.0, 1.0));
-               float x = vUv.x * cos(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0);
-               float y = abs(0.5 - vUv.y + sin(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0))/ 2.0;
+                float depth = 1.0-(abs(0.5 - vUv.y) * 6.0);
+                float opacity =  2.0* (1.0-(abs(0.5 - vUv.x) * 2.0));
+                float intense = abs(0.5 - vUv.x);
+                float glow = pow(abs(0.5 - vUv.x), 2.0) * 6.0 * pow(sin((3.141592654/2.0)+vUv.x * 3.141592654)*cos((3.141592654/2.0)+vUv.y * 3.141592654), 8.0);
 
-               float intense = abs(mod(cos(x * 3.141592654 * 5.0), 0.4)-0.2);
-
-               intense += abs(mod(cos(x * 3.141592654 * 10.0), 0.4)-0.2);
-               intense += abs(mod(cos(x / 4.0 * 3.141592654 * 10.0), 0.4)-0.2);
-               intense += abs(mod(cos(x / 16.0 * 3.141592654 * 5.0), 0.4)-0.2);
-               intense += abs(mod(sin(y * 3.141592654 * 10.0)*7.0, 0.4) - 0.2);
-               intense += abs(mod(sin(y / 4.0 * 3.141592654 * 5.0)*10.0, 0.4) - 0.2);
-               intense += abs(mod(sin(y / 16.0 * 3.141592654 * 4.0)*10.0, 0.4) - 0.2);
-               intense += abs(mod(sin(y / 64.0 * 3.141592654 * 3.0)*10.0, 0.4) - 0.2);
-               intense = pow(intense, 2.0);
+            //    float a = noise(vec3(vUv.x, vUv.y, 1.0));
+            //    float a2 = noise(vec3(vUv.x * 10.0, vUv.y * 10.0, 1.0));
+            //    float a3 = noise(vec3(vUv.x * 40.0, vUv.y * 40.0, 1.0));
+            //    float a4 = noise(vec3(vUv.x * 560.0, vUv.y * 140.0, 1.0));
+            //    float x = vUv.x * cos(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0);
+            //    float y = abs(0.5 - vUv.y + sin(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0))/ 2.0;
+            //    float intense = abs(mod(cos(x * 3.141592654 * 5.0), 0.4)-0.2);
+            //    intense += abs(mod(cos(x * 3.141592654 * 10.0), 0.4)-0.2);
+            //    intense += abs(mod(cos(x / 4.0 * 3.141592654 * 10.0), 0.4)-0.2);
+            //    intense += abs(mod(cos(x / 16.0 * 3.141592654 * 5.0), 0.4)-0.2);
+            //    intense += abs(mod(sin(y * 3.141592654 * 10.0)*7.0, 0.4) - 0.2);
+            //    intense += abs(mod(sin(y / 4.0 * 3.141592654 * 5.0)*10.0, 0.4) - 0.2);
+            //    intense += abs(mod(sin(y / 16.0 * 3.141592654 * 4.0)*10.0, 0.4) - 0.2);
+            //    intense += abs(mod(sin(y / 64.0 * 3.141592654 * 3.0)*10.0, 0.4) - 0.2);
+               //intense = pow(intense, 2.0);
                //float waver = 0.06 * -vUv.y *  sin(vUv.x * 3.141592654 * 12.0 );
                float blue = 1.0*intense;
-               float red = 0.66*intense;
+               float red = 0.56*intense;
                float green = 0.11;
+               vec4 bg = vec4(0.15, 0.05, 0.2, 1.0);
                vec4 color = vec4(
                    opacity * (intense * (red * depth)),
                    opacity * depth* intense * green,
-                   opacity * (intense * (blue * depth)),
+                   opacity * depth* intense * blue,
                    1.0
                );
-               gl_FragColor = color;
+               gl_FragColor = (bg + color + vec4(1.0*glow, 0.8*glow, 0.1*glow, 1.0));
             }
         </script>
         <script type="x-shader/x-vertex" id="webcam-vertex">

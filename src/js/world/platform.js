@@ -2,7 +2,7 @@ export default class Platform {
   constructor (data) {
       var mesh = null,
           geom = new THREE.CylinderGeometry( 128000, 128000, 2048, 6),
-          mat = new THREE.MeshPhongMaterial( {color: 0xffffff} ),
+          mat = new THREE.MeshPhongMaterial( {color: 0x302025, shininess: 30} ),
           mesh = new THREE.Mesh(geom, mat);
 
       three.scene.add(mesh);
