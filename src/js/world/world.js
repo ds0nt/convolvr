@@ -43,39 +43,40 @@ export default class World {
 		document.body.appendChild( renderer.domElement );
 		renderer.domElement.setAttribute("id", "viewport");
 		renderer.setClearColor(0x241631);
-				camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
+		//camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
+		camera.position.set(85000, 5916.124890438994, 155000);
 
-				skyShaderMat = new THREE.ShaderMaterial( {
-					side: 1,
-					fog: false,
-					uniforms: {
-						time: { value: 1.0 }
-					},
-					vertexShader: document.getElementById('sky-vertex').textContent,
-					fragmentShader: document.getElementById('sky-fragment').textContent
+		skyShaderMat = new THREE.ShaderMaterial( {
+			side: 1,
+			fog: false,
+			uniforms: {
+				time: { value: 1.0 }
+			},
+			vertexShader: document.getElementById('sky-vertex').textContent,
+			fragmentShader: document.getElementById('sky-fragment').textContent
 
-				} );
+		} );
 
-				this.ground = new THREE.Object3D();
-				this.ground.rotation.x = -Math.PI /2;
-				this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyShaderMat);
-				this.skybox.add(light);
-				scene.add(core);
-				core.position.set(0, 2000, 0);
-				light.position.set(0, 20000, 0);
-				scene.add(this.skybox);
-				this.skybox.position.set(camera.position.x, 0, camera.position.z);
+		this.ground = new THREE.Object3D();
+		this.ground.rotation.x = -Math.PI /2;
+		this.skybox = new THREE.Mesh(new THREE.OctahedronGeometry(750000, 4), skyShaderMat);
+		this.skybox.add(light);
+		scene.add(core);
+		core.position.set(0, 2000, 0);
+		light.position.set(0, 20000, 0);
+		scene.add(this.skybox);
+		this.skybox.position.set(camera.position.x, 0, camera.position.z);
 
-				userInput.init(this, camera, this.user);
-				this.worldPhysics = new WorldPhysics();
-				this.worldPhysics.init(self);
+		userInput.init(this, camera, this.user);
+		this.worldPhysics = new WorldPhysics();
+		this.worldPhysics.init(self);
 
-				this.core = {
-					physics: this.worldPhysics.worker,
-					// audio: this.worldAudio.worker,
-					// video: this.worldVideo.worker,
-					// npc: this.npcLogic.worker
-				}
+		this.core = {
+			physics: this.worldPhysics.worker,
+			// audio: this.worldAudio.worker,
+			// video: this.worldVideo.worker,
+			// npc: this.npcLogic.worker
+		}
 
 		three = this.three = {
 			world: this,
