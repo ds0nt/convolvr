@@ -1,9 +1,11 @@
 export default class Component {
   constructor (data) {
       var mesh = null,
+          type = data.type;
           shape = data.shape,
           size = data.size,
-          rotation = data.rotation ? data.rotation : { x: 0, y: 0, z: 0 },
+          rotation = data.rotation ? data.rotation : { x: 0, y: 0, z: 0, w: 0 },
+          position = data.position ? data.position : { x: 0, y: 0, z: 0 },
           material = new THREE.MeshBasicMaterial({ // temporary material..
               color: data.color || 0xffffff,
               wireframe: true,
@@ -35,8 +37,10 @@ export default class Component {
           return;
       }
 
-      mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+      mesh..quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+      mesh.position.set(position.x, position.y, position.z)
       this.data = data;
+      this.type = type;
       this.mesh = mesh;
   }
 }

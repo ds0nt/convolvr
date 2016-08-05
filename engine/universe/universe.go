@@ -39,7 +39,7 @@ func (u *Universe) listenEntity(id string) {
 	u.entityMutex.Lock()
 	e, ok := u.entitiesById[id]
 	if !ok {
-		e = entities.NewEntity()
+		e = entities.NewEntity([]string{"default"})
 		u.entities = append(u.entities, e)
 		u.entitiesById[id] = e
 	}

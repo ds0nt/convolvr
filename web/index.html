@@ -82,9 +82,13 @@
 
             void main( void ) {
                 float depth = 1.0-(abs(0.5 - vUv.y) * 6.0);
-                float opacity =  2.0* (1.0-(abs(0.5 - vUv.x) * 2.0));
-                float intense = abs(0.5 - vUv.x);
-                float glow =  pow(sin((3.141592654/2.0)+vUv.x * 3.141592654)*cos((3.141592654/2.0)+vUv.y * 3.141592654), 8.0);
+                float opacity =  2.0* (1.0-(abs(0.5 - (vUv.y)) * 2.0));
+                float intense = abs(0.25 - (vUv.x / 2.0));
+                float glow =  0.0;
+
+                //if (vUv.y < 0.80 && (vUv.x >= 0.25 && vUv.x <= 0.75)) {
+                    glow = pow((0.5 * sin(cos(vUv.x*3.141592654)) / sin(abs(0.5 - vUv.y)*3.141592654)), 2.0) * 0.005;
+                //}
                     //pow( 5.0 * abs(0.5 - vUv.x), 2.0) *
             //    float a = noise(vec3(vUv.x, vUv.y, 1.0));
             //    float a2 = noise(vec3(vUv.x * 10.0, vUv.y * 10.0, 1.0));
@@ -102,8 +106,8 @@
             //    intense += abs(mod(sin(y / 64.0 * 3.141592654 * 3.0)*10.0, 0.4) - 0.2);
                //intense = pow(intense, 2.0);
                //float waver = 0.06 * -vUv.y *  sin(vUv.x * 3.141592654 * 12.0 );
-               float blue = 1.0*intense;
-               float red = 0.56*intense;
+               float blue = 1.2*intense;
+               float red = 0.55*intense;
                float green = 0.11;
                vec4 bg = vec4(0.15, 0.05, 0.2, 1.0);
                vec4 color = vec4(
@@ -112,7 +116,7 @@
                    opacity * depth* intense * blue,
                    1.0
                );
-               gl_FragColor = (bg + color + vec4(1.0*glow, 0.8*glow, 0.1*glow, 1.0));
+               gl_FragColor = (bg + color + vec4(1.0*glow, 0.8*glow, 0.7*glow /4.0, 1.0));
             }
         </script>
         <script type="x-shader/x-vertex" id="webcam-vertex">
