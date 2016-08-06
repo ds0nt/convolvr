@@ -6,26 +6,26 @@ import (
 )
 
 type Component struct {
-	Id         string            `json:"id"`
-	Type       string            `json:"type"`
-	Shape	   string            `json:"shape"`
-	Size       []int             `json:"size"`
-	Color      int               `json:"color"`
-	Material   string            `json:"mat"`
-	Position   *types.Position   `json:"pos"`
-	Quaternion *types.Quaternion `json:"quat"`
+	Id             string            `json:"id"`
+	ComponentType  string            `json:"type"`
+	Shape	       string            `json:"shape"`
+	Size           []int             `json:"size"`
+	Color          int               `json:"color"`
+	Material       string            `json:"mat"`
+	Position       *types.Position   `json:"pos"`
+	Quaternion     *types.Quaternion `json:"quat"`
 }
 
 func NewComponent(componentType string, shape string, size []int, color int, material string, p *types.Position, q *types.Quaternion) *Component {
 	return &Component{
-		Id:         uuid.NewUUID().String(),
-		Type:	    componentType,
-		Shape:      shape,
-		Size:       size,
-		Color:      color,
-		Material:   material,
-		Position:   &types.Position{ X: p.X, Y: p.Y, Z: p.Z },
-		Quaternion: &types.Quaternion{ X: q.X, Y: q.Y, Z: q.Z, W: q.W },
+		Id:             uuid.NewUUID().String(),
+		ComponentType:	componentType,
+		Shape:          shape,
+		Size:           size,
+		Color:          color,
+		Material:       material,
+		Position:       &types.Position{ X: p.X, Y: p.Y, Z: p.Z },
+		Quaternion:     &types.Quaternion{ X: q.X, Y: q.Y, Z: q.Z, W: q.W },
 	}
 }
 
