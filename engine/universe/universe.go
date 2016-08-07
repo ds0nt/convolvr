@@ -6,16 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Shopify/sarama"
 	"github.com/SpaceHexagon/convolvr/engine/entities"
-	"github.com/pkg/errors"
 )
-
-type UniverseStore interface {
-	Put(key string, value []byte) error
-	Listen(key string) (chan []byte, chan error)
-	Close()
-}
 
 type Universe struct {
 	store        UniverseStore
@@ -82,8 +74,12 @@ func (u *Universe) Start() {
 	log.Println("Universe Started")
 
 	t := time.NewTicker(time.Second / 30)
-	for range t.C {
+	t2 := time.Now()
+	for t := range t.C {
+		log.Println("sleep", t.Sub(t2))
 		u.Tick()
+		t2 = time.Now()
+		log.Println("process", t2.Sub(t))
 	}
 }
 
@@ -104,10 +100,16 @@ func (u *Universe) AddEntity(e *entities.Entity) {
 
 func (u *Universe) Tick() {
 	log.Println("Tick")
-	for _, entity := range u.entities {
-		data, _ := json.Marshal(entity)
-		u.store.Put("entity-"+entity.Id, data)
+	g := sync.WaitGroup{}
+	g.Add(len(u.entities))
+	for k := range u.entities {
+		go func(k int) {
+			data, _ := json.Marshal(u.entities[k])
+			u.store.Put("entity-"+u.entities[k].Id, data)
+			g.Done()
+		}(k)
 	}
+	g.Wait()
 	// do updates
 
 	// random things!
@@ -121,71 +123,4 @@ func (u *Universe) Tick() {
 	// etc.
 
 	// update by universe rules
-}
-
-type KafkaStore struct {
-	producer sarama.SyncProducer
-	consumer sarama.Consumer
-}
-
-func NewKafkaStore(addrs []string) *KafkaStore {
-	producer, err := sarama.NewSyncProducer(addrs, nil)
-	if err != nil {
-		panic(err)
-	}
-	consumer, err := sarama.NewConsumer(addrs, nil)
-	if err != nil {
-		panic(err)
-	}
-	return &KafkaStore{
-		producer: producer,
-		consumer: consumer,
-	}
-}
-
-func (s *KafkaStore) Close() {
-	s.producer.Close()
-	s.consumer.Close()
-}
-
-func (s *KafkaStore) Listen(key string) (chan []byte, chan error) {
-	outCh := make(chan []byte)
-	errCh := make(chan error)
-
-	go func() {
-		defer func() {
-			close(outCh)
-			close(errCh)
-		}()
-		p, err := s.consumer.ConsumePartition(key, 0, sarama.OffsetOldest)
-		if err != nil {
-			log.Println("err", err)
-
-			errCh <- err
-			return
-		}
-		defer p.Close()
-		for {
-			select {
-			case msg := <-p.Messages():
-				outCh <- msg.Value
-			case err := <-p.Errors():
-				log.Println("err", err)
-				errCh <- err
-				return
-			}
-		}
-	}()
-
-	return outCh, errCh
-}
-
-func (s *KafkaStore) Put(key string, value []byte) error {
-	msg := &sarama.ProducerMessage{Topic: key, Value: sarama.ByteEncoder(value)}
-	partition, offset, err := s.producer.SendMessage(msg)
-	if err != nil {
-		return errors.Wrap(err, "kafka failed to put "+key)
-	}
-	log.Printf("wrote topic %s partition %d offset %d", key, partition, offset)
-	return nil
 }
