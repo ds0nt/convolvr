@@ -1,0 +1,1 @@
+/* view and create platforms */ 
