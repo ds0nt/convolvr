@@ -2,23 +2,23 @@ package entities
 
 import (
 	"github.com/SpaceHexagon/convolvr/engine/types"
-	//"github.com/SpaceHexagon/convolvr/engine/components"
+	"github.com/SpaceHexagon/convolvr/engine/components"
 	"github.com/pborman/uuid"
 )
 
 type Entity struct {
 	Id           string                   `json:"id"`
-	Aspects      []string 		          `json:"aspects"`
-	//Components   []*components.Component  `json:"components"`
+	Aspects      []*types.Aspect	      `json:"aspects"`
+	Components   []*components.Component  `json:"components"`
 	Position     *types.Position          `json:"pos"`
 	Quaternion   *types.Quaternion        `json:"quat"`
 }
 
-func NewEntity(aspects []string ) *Entity { // components []*components.Component
+func NewEntity(components []*components.Component, aspects []*types.Aspect ) *Entity { // components []*components.Component
 	return &Entity{
 		Id:           uuid.NewUUID().String(),
 		Aspects:	  aspects,
-		//Components:   components,
+		Components:   components,
 		Position:     &types.Position{},
 		Quaternion:   &types.Quaternion{},
 	}

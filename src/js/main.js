@@ -27,7 +27,7 @@ import io from 'socket.io-client'
 //import SocketEvents from './socket-events.js';
 //import WorldPhysics from './world/world-physics.js';
 import World from './world/world.js';
-//import Avatar from './world/avatars/default.js';
+//import Avatar from './world/avatar.js';
 
 var token = localStorage.getItem("token"),
 		userInput,

@@ -5,9 +5,10 @@ import (
 	"log"
 	"sync"
 	"time"
-
 	"github.com/Shopify/sarama"
 	"github.com/SpaceHexagon/convolvr/engine/entities"
+	"github.com/SpaceHexagon/convolvr/engine/components"
+	"github.com/SpaceHexagon/convolvr/engine/types"
 	"github.com/pkg/errors"
 )
 
@@ -39,7 +40,7 @@ func (u *Universe) listenEntity(id string) {
 	u.entityMutex.Lock()
 	e, ok := u.entitiesById[id]
 	if !ok {
-		e = entities.NewEntity([]string{"default"})
+		e = entities.NewEntity([]*components.Component{}, []*types.Aspect{})
 		u.entities = append(u.entities, e)
 		u.entitiesById[id] = e
 	}
