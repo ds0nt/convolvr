@@ -81,6 +81,16 @@
             }
 
             void main( void ) {
+              //   float depth = 1.0-(abs(0.5 - vUv.y) * 4.0);
+              //   float opacity =  1.0-(abs(0.5 - vUv.x) * 2.0);
+              //  float a =  noise(vec3(time*vUv.x, vUv.y, 1.0));
+              //  float a2 = noise(vec3(time*vUv.x * 10.0, vUv.y * 10.0, 1.0));
+              //  float a3 = noise(vec3(time*vUv.x * 40.0, vUv.y * 40.0, 1.0));
+              //  float a4 = noise(vec3(time*vUv.x * 560.0, vUv.y * 140.0, 1.0));
+              //  float x = vUv.x * cos(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0);
+              //  float y = abs(0.5 - vUv.y + sin(a + a2 / 10.0 + a3 / 40.0 + a4 / 160.0)) / 2.0;
+               //
+              //  float intense = abs(mod(cos(x * 3.141592654 * 5.0), 0.4)-0.2);
                 float depth = 1.0-(abs(0.5 - vUv.y) * 6.0);
                 float opacity =  2.0* (1.0-(abs(0.5 - (vUv.y)) * 2.0));
                 float intense = abs(0.25 - (vUv.x / 2.0));

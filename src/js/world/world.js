@@ -1,9 +1,12 @@
 import Avatar from './avatar.js';
 import WorldPhysics from '../core/world-physics.js';
-import {send} from '../network/socket'
+import {on,send} from '../network/socket'
 
 export default class World {
 	constructor(userInput = false) {
+		on("/update", data => {
+			console.log(data)
+		})
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),
 			renderer = new THREE.WebGLRenderer(),
@@ -18,6 +21,7 @@ export default class World {
 			x = 0,
 			y = 0,
 			r = 4000;
+
 
 		this.mode = "vr";
 		this.user = {
@@ -40,6 +44,7 @@ export default class World {
 		document.body.appendChild( renderer.domElement );
 		renderer.domElement.setAttribute("id", "viewport");
 		renderer.setClearColor(0x241631);
+
 		//camera.position.set(-18391.370770019803, 5916.124890438994, -14620.440770421374);
 		camera.position.set(85000, 5916.124890438994, 155000);
 
@@ -100,7 +105,7 @@ export default class World {
 			core = sys.three.core,
 			mobile = sys.mobile,
 			camera = sys.three.camera,
-			delta = ((Date.now() - last) / 10000),
+			delta = ((Date.now() - last) / 10000.0),
 			time = (Date.now() / 4600),
 			image = "",
 			imageSize = [0, 0],
@@ -150,7 +155,7 @@ export default class World {
 				}
 
 				core.rotation.y += 0.005;
-				sys.skybox.material.uniforms.time.value += delta;
+				sys.skybox.material.uniforms.time.value += delta
 				sys.skybox.position.set(camera.position.x, camera.position.y, camera.position.z);
 				sys.ground.position.set(camera.position.x, camera.position.y - 2000, camera.position.z)
 				sys.three.renderer.render(sys.three.scene, camera);
