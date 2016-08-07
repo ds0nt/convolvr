@@ -11,7 +11,7 @@ websocket.onmessage = (message) => {
   }
 
   if (!!handlers[data.p]) {
-    handlers[data.p].map(v => v(data))
+    handlers[data.p].map(v => v(JSON.parse(data.d)))
   }
 }
 
@@ -52,10 +52,12 @@ export function sendReceive(path, data, cb) {
   let hook = res => {
     if (typeof res.request_id !== 'undefined' && res.request_id == data.request_id) {
       cb(res)
-      off(path, x)
+      handlers[path] = handlers[path].filter(v => v != hook)
     }
   }
-
-  on(path, hook)
+  if (!handlers[path]) {
+    handlers[path] = []
+  }
+  handlers[path].push(hook)
   send(path, data)
 }

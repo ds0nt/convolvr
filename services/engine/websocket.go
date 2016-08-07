@@ -113,15 +113,15 @@ func (svc Service) onClientUpdate(r *socket.Request, c *socket.Client) {
 }
 
 type userCreateData struct {
-	RequestId string `json:"request_id"`
+	RequestId int    `json:"request_id"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
 
 type userCreateResponse struct {
-	RequestId string
-	Id        string
+	RequestId int    `json:"request_id"`
+	Id        string `json:"id"`
 }
 
 func (svc Service) onClientUserCreate(r *socket.Request, c *socket.Client) {
@@ -130,6 +130,7 @@ func (svc Service) onClientUserCreate(r *socket.Request, c *socket.Client) {
 	params := userCreateData{}
 	err := r.Decode(&params)
 	if err != nil {
+		log.WithField("handler", "onClientUserCreate").Println("invalid params", string(r.Data))
 		c.SendError(errors.Errorf("invalid params %s", string(r.Data)))
 		return
 	}
@@ -144,6 +145,7 @@ func (svc Service) onClientUserCreate(r *socket.Request, c *socket.Client) {
 	if err != nil {
 		log.Printf("Could not create user: %v", err)
 	}
+	log.WithField("handler", "onClientUserCreate").Println("created user", res.Id)
 	msg, _ := socket.NewBaseMessage("/user/create", &userCreateResponse{
 		RequestId: params.RequestId,
 		Id:        res.Id,

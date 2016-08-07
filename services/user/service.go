@@ -52,13 +52,18 @@ func (svc *Service) Start() {
 }
 
 func (svc *Service) start() {
+	log.Println("Starting Service")
+
 	lis, err := net.Listen("tcp", svc.config.GRPCPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 	RegisterUserServiceServer(s, svc)
+
+	log.Println("Serving")
 	s.Serve(lis)
+	log.Println("wtf")
 }
 
 func (s *Service) GetUser(c context.Context, r *GetUserRequest) (*GetUserResponse, error) {

@@ -4,13 +4,33 @@ import {on,send,sendReceive} from '../network/socket'
 
 export default class World {
 	constructor(userInput = false) {
-		sendReceive("/user/create", {
-			username: "Foo",
-			email: "foo@foo.com",
-			password: "abcdfooZ",
-		}, res => {
-			console.log("Create User!", res)
-		})
+		setTimeout(() => {
+
+			sendReceive("/user/create", {
+				username: "Foo",
+				email: "foo@foo.com",
+				password: "abcdfooZ",
+			}, res => {
+				console.log("Create User!", res)
+			})
+
+			sendReceive("/user/create", {
+				username: "Foo2",
+				email: "foo2@foo.com",
+				password: "abcdfooZ",
+			}, res => {
+				console.log("Create User!", res)
+			})
+
+			sendReceive("/user/create", {
+				username: "Foo3",
+				email: "foo3@foo.com",
+				password: "abcdfooZ",
+			}, res => {
+				console.log("Create User!", res)
+			})
+		}, 5000)
+
 		on("/update", data => {
 			// console.log(data)
 		})
