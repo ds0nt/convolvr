@@ -1,7 +1,7 @@
 import Component from './component.js';
 
 export default class Entity {
-  constructor (id, components, position, quaternion, params = {}) {
+  constructor (id, components, position, quaternion, aspects = []) {
       this.id = id;
       this.components = components;
       this.position = position;
@@ -23,12 +23,11 @@ export default class Entity {
     }
     mesh.position.set(position.x, position.y, position.z);
     scene.add(mesh);
-
-    if (params.physics) {
-        // send 'add collision entity' message to physics worker
-    }
-    if (params.audio) {
-        // send 'add sound node' message to audio worker etc..
+    if (!!aspects) {
+        c = 0;
+        while (c < aspects.length) {
+            // connect entity to appropriate system
+        }
     }
   }
 

@@ -37,7 +37,7 @@ var token = localStorage.getItem("token"),
 	userInput = new UserInput();
 	world = new World(userInput);
 	userInput.init(world, world.camera, {mesh:new THREE.Object3D(), velocity: new THREE.Vector3()});
-	userInput.rotationVector = {x: 6.153333333333329, y: -21.09666666666679, z: 0};
+	userInput.rotationVector = {x: 6.153333333333329, y: -12.121666666666789, z: 0};
 
 const muiTheme = getMuiTheme({
       palette: {

@@ -6,14 +6,14 @@ export default class WorldPhysics {
 	init (world) {
 		let worker = new Worker('/js/workers/physics.js');
 	      worker.onmessage = function (event) {
-	        let data = JSON.parse(event.data),
+	        let message = JSON.parse(event.data),
 	          sys = world,
 	          cam = three.camera,
 	          user = sys.user,
 	          position = [],
 	          velocity = [];
 
-	        if (data.command == "update") {
+	        if (message.command == "update") {
 	          worker.postMessage('{"command":"update","data":{"position":['+cam.position.x+
 	          ','+cam.position.y+
 	          ','+cam.position.z+
@@ -21,27 +21,25 @@ export default class WorldPhysics {
 	          ','+user.velocity.y+
 	          ','+user.velocity.z+'] }}');
 
-	        } else if (data.command == "collision") {
+		  } else if (message.command == "collision") {
 	          console.log("collision");
-	          console.log(data.data);
-
-	        } else if (data.command == "chunk collision") {
-	          //console.log("chunk collision");
+	          console.log(message.data);
+		  } else if (message.command == "platform collision") {
+	          console.log(message.command);
 	          //console.log(data.data);
-	          three.camera.position.set(data.data.position[0], data.data.position[1], data.data.position[2]);
+	          three.camera.position.set(message.data.position.x, message.data.position.y, message.data.position.z);
 			  sys.user.velocity.x *= -0.95;
 			  sys.user.velocity.y *= -0.95;
 			  sys.user.velocity.z *= -0.95;
 
-	        } else if (data.command == "user collision") {
-	          console.log("user collision");
-	          console.log(data.data);
+		  } else if (message.command == "user collision") {
+	          console.log(message.data);
 
-	        } else if (data.command == "building collision") {
-	          position = data.data.position;
-	          if (sys.tcl && data.data.inner == 0) {
+		  } else if (message.command == "building collision") {
+	          position = message.data.position;
+	          if (sys.tcl && message.data.inner == 0) {
 	            sys.user.falling = false;
-	            if (data.data.delta[0] > data.data.delta[1]) {
+	            if (message.data.delta[0] > message.data.delta[1]) {
 	              three.camera.position.x = position[0];
 	              UserInput.device.velocity.x *= -0.85;
 
@@ -52,14 +50,14 @@ export default class WorldPhysics {
 	          }
 	          sys.vibrate(50);
 	        } else if (data.command == "load interior") {
-	          console.log("load interior... ", data.data.name);
-	          world.loadInterior(data.data.name);
+	          console.log("load interior... ", message.data.name);
+	          world.loadInterior(message.data.name);
 
 	        } else if (data.command == "enter interior") {
-	          if (data.data.name != sys.venue) {
-	            //console.log("data.data.name", data.data.name);
-	            sys.venue = data.data.name;
-	            world.enterInterior(data.data.name);
+	          if (message.data.name != sys.venue) {
+	            //console.log("message.data.name", data.data.name);
+	            sys.venue = message.data.name;
+	            world.enterInterior(message.data.name);
 	          }
 	        } else {
 	          console.log(data);

@@ -30,6 +30,10 @@ export function fetchTracks (id) {
    }
 }
 export function doneFetchTracks (tracks) {
+    let physicsWorld = three.world.worldPhysics.worker;
+    tracks.map(data => {
+
+    })
     return {
         type: TRACKS_FETCH_DONE,
         tracks: tracks
@@ -49,6 +53,11 @@ export function updateTrack (id, data) {
     }
 }
 export function deleteTrack (id) {
+    let physicsWorld = three.world.worldPhysics.worker;
+    physicsWorld.postMessage(JSON.stringify({
+        command: "remove track",
+        data: id
+    }))
     return {
         type: DELETE_TRACK
     }

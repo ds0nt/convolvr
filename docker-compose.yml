@@ -1,0 +1,23 @@
+zookeeper:
+  image: jplock/zookeeper:3.4.6
+
+kafka:
+  image: ches/kafka
+  links:
+    - zookeeper
+  ports:
+    - 9092
+
+engine:
+  build: cmd/engine
+  links:
+    - kafka
+  ports:
+    - 8080
+  environment:
+    - KAFKA_ADDR=kafka:9092
+    - SSL=false
+    - PORT=:8080
+    - TLS_PORT=
+    - CERTIFICATE=
+    - KEY=
