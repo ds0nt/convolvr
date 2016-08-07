@@ -6,6 +6,7 @@ export default class Entity {
       this.components = components;
       this.position = position;
       this.quaternion = quaternion;
+      this.mesh = null;
   }
 
   init (scene) {
@@ -23,6 +24,7 @@ export default class Entity {
     }
     mesh.position.set(position.x, position.y, position.z);
     scene.add(mesh);
+    this.mesh = mesh;
     if (!!aspects) {
         c = 0;
         while (c < aspects.length) {
