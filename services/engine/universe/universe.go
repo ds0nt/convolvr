@@ -75,13 +75,13 @@ func (u *Universe) Start() {
 	}()
 	log.Println("Universe Started")
 
-	t := time.NewTicker(time.Second / 30)
-	t2 := time.Now()
-	for t := range t.C {
-		log.Println("sleep", t.Sub(t2))
+	t := time.NewTicker(time.Second / 20)
+	// t2 := time.Now()
+	for range t.C {
+		// log.Println("sleep", t.Sub(t2))
 		u.Tick()
-		t2 = time.Now()
-		log.Println("process", t2.Sub(t))
+		// t2 = time.Now()
+		// log.Println("process", t2.Sub(t))
 	}
 }
 
@@ -101,7 +101,7 @@ func (u *Universe) AddEntity(e *entities.Entity) {
 }
 
 func (u *Universe) Tick() {
-	log.Println("Tick")
+	// log.Println("Tick")
 	g := sync.WaitGroup{}
 	g.Add(len(u.entities))
 	for k := range u.entities {

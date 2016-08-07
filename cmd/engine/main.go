@@ -12,6 +12,7 @@ func main() {
 	viper.BindEnv("certificate")
 	viper.BindEnv("key")
 	viper.BindEnv("kafka_addr")
+	viper.BindEnv("user_svc_addr")
 	viper.BindEnv("web_path")
 
 	svc := engine.NewService(engine.ServiceConfig{
@@ -21,6 +22,7 @@ func main() {
 		Certificate: viper.GetString("certificate"),
 		Key:         viper.GetString("key"),
 		KafkaAddr:   viper.GetString("kafka_addr"),
+		UserAddr:    viper.GetString("user_svc_addr"),
 		WWW:         viper.GetString("web_path"),
 	})
 

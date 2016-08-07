@@ -8,17 +8,26 @@ kafka:
   ports:
     - 9092
 
+user:
+  build: cmd/user
+  volumes:
+    - /data
+  environment:
+    GRPC_PORT: ":8081"
+
 engine:
   build: cmd/engine
   volumes:
     - ./web:/web
   links:
     - kafka
+    - user
   ports:
     - 2000:8080
   environment:
     WEB_PATH: "/web"
     KAFKA_ADDR: "kafka:9092"
+    USER_SVC_ADDR: "user:8081"
     SSL: "false"
     PORT: ":8080"
     TLS_PORT:

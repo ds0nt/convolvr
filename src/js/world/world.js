@@ -1,11 +1,18 @@
 import Avatar from './avatar.js';
 import WorldPhysics from '../core/world-physics.js';
-import {on,send} from '../network/socket'
+import {on,send,sendReceive} from '../network/socket'
 
 export default class World {
 	constructor(userInput = false) {
+		sendReceive("/user/create", {
+			username: "Foo",
+			email: "foo@foo.com",
+			password: "abcdfooZ",
+		}, res => {
+			console.log("Create User!", res)
+		})
 		on("/update", data => {
-			console.log(data)
+			// console.log(data)
 		})
 		var scene = new THREE.Scene(),
 			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 100, 1000000 ),

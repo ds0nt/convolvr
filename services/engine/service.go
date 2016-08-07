@@ -6,6 +6,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/SpaceHexagon/convolvr/services/user"
+	"google.golang.org/grpc"
 )
 
 //"gopkg.in/redis.v3"
@@ -13,8 +16,9 @@ import (
 
 // Service is the main game engine service
 type Service struct {
-	config ServiceConfig
-	done   chan struct{}
+	config     ServiceConfig
+	done       chan struct{}
+	userClient user.UserServiceClient
 }
 
 // ServiceConfig is the start configuration for the engine service
@@ -25,6 +29,7 @@ type ServiceConfig struct {
 	Certificate string
 	Key         string
 	KafkaAddr   string
+	UserAddr    string
 	WWW         string
 }
 
@@ -49,6 +54,14 @@ func (svc *Service) Start() {
 }
 
 func (svc *Service) start() {
+	// Set up a connection to the server.
+	userConn, err := grpc.Dial(svc.config.UserAddr, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer userConn.Close()
+	svc.userClient = user.NewUserServiceClient(userConn)
+
 	go startUpdater()
 
 	http.Handle("/", http.FileServer(http.Dir(svc.config.WWW)))

@@ -86,10 +86,10 @@ func (s *KafkaStore) Listen(key string) (chan []byte, chan error) {
 
 func (s *KafkaStore) Put(key string, value []byte) error {
 	msg := &sarama.ProducerMessage{Topic: key, Value: sarama.ByteEncoder(value)}
-	partition, offset, err := s.producer.SendMessage(msg)
+	_, _, err := s.producer.SendMessage(msg)
 	if err != nil {
 		return errors.Wrap(err, "kafka failed to put "+key)
 	}
-	log.Printf("wrote topic %s partition %d offset %d", key, partition, offset)
+	// log.Printf("wrote topic %s partition %d offset %d", key, partition, offset)
 	return nil
 }
