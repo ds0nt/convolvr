@@ -1,4 +1,4 @@
-import Avatar from './avatars/default.js';
+import Avatar from './avatar.js';
 import WorldPhysics from '../core/world-physics.js';
 import {on,send} from '../network/socket'
 
@@ -12,15 +12,11 @@ export default class World {
 			renderer = new THREE.WebGLRenderer(),
 			mobile = (window.innerWidth <= 640),
 			self = this,
-			coreGeom = new THREE.CylinderGeometry( 8096, 8096, 1024, 9),
+			coreGeom = new THREE.CylinderGeometry(8096, 8096, 1024, 9),
 			material = new THREE.MeshPhongMaterial( {color: 0xffffff} ),
-			skyboxSideMat = new THREE.MeshBasicMaterial( {color:0x241631, fog: false} ),
 			core = new THREE.Mesh(coreGeom, material),
 			light = new THREE.PointLight(0xfcfcff, 1.5, 900000),
-			panelMat = new THREE.MeshLambertMaterial({ color: 0xe1e1e1 }),
-			cellGeometry = new THREE.CylinderGeometry(192, 192, 128, 6),
 			skyShaderMat = null,
-			cell = null,
 			three = {},
 			x = 0,
 			y = 0,
@@ -29,6 +25,7 @@ export default class World {
 
 		this.mode = "vr";
 		this.user = {
+			username: "user"+Math.floor(1000000*Math.random()),
 			arms: [],
 			velocity: new THREE.Vector3()
 		}
@@ -180,7 +177,7 @@ export default class World {
 					});
 				}
 				send('/update', {
-					username:sys.username,
+					username: sys.user.username,
 					image: sys.webcamImage,
 					imageSize: imageSize,
 					arms: arms,

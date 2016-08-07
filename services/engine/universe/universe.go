@@ -5,8 +5,16 @@ import (
 	"log"
 	"sync"
 	"time"
+<<<<<<< HEAD:services/engine/universe/universe.go
 
 	"github.com/SpaceHexagon/convolvr/services/engine/entities"
+=======
+	"github.com/Shopify/sarama"
+	"github.com/SpaceHexagon/convolvr/engine/entities"
+	"github.com/SpaceHexagon/convolvr/engine/components"
+	"github.com/SpaceHexagon/convolvr/engine/types"
+	"github.com/pkg/errors"
+>>>>>>> 803cbe5b4789d816bdcc1d2f426bd22b910bcfe9:engine/universe/universe.go
 )
 
 type Universe struct {
@@ -31,7 +39,7 @@ func (u *Universe) listenEntity(id string) {
 	u.entityMutex.Lock()
 	e, ok := u.entitiesById[id]
 	if !ok {
-		e = entities.NewEntity([]string{"default"})
+		e = entities.NewEntity([]*components.Component{}, []*types.Aspect{})
 		u.entities = append(u.entities, e)
 		u.entitiesById[id] = e
 	}

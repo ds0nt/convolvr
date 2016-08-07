@@ -2,8 +2,8 @@ package entities
 
 import (
 	"fmt"
-	//"github.com/SpaceHexagon/convolvr/engine/components"
-	//"github.com/SpaceHexagon/convolvr/engine/types"
+	"github.com/SpaceHexagon/convolvr/engine/components"
+	"github.com/SpaceHexagon/convolvr/engine/types"
 )
 
 type Player struct {
@@ -22,7 +22,7 @@ func NewPlayer() *Player {
 	playerCount++
 	return &Player{
 		//Entity:   NewEntity([]string{"aspect_test"},[]*components.Component{*components.NewComponent("stucture", "box", []int{100,100,100}, 0xffffff, "default", &types.Position{}, &types.Quaternion{})}),
-		Entity: NewEntity([]string{"aspect_test"}),
+		Entity: NewEntity([]*components.Component{}, []*types.Aspect{}),
 		Username: fmt.Sprintf("Player%d", playerCount),
 		LeftArm:  NewArm(),
 		RightArm: NewArm(),
@@ -35,6 +35,6 @@ type Arm struct {
 
 func NewArm() *Arm {
 	return &Arm{
-		Entity: NewEntity([]string{"limb"}),
+		Entity: NewEntity([]*components.Component{}, []*types.Aspect{}),
 	}
 }
