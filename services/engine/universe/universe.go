@@ -5,16 +5,10 @@ import (
 	"log"
 	"sync"
 	"time"
-<<<<<<< HEAD:services/engine/universe/universe.go
 
+	"github.com/SpaceHexagon/convolvr/services/engine/components"
 	"github.com/SpaceHexagon/convolvr/services/engine/entities"
-=======
-	"github.com/Shopify/sarama"
-	"github.com/SpaceHexagon/convolvr/engine/entities"
-	"github.com/SpaceHexagon/convolvr/engine/components"
-	"github.com/SpaceHexagon/convolvr/engine/types"
-	"github.com/pkg/errors"
->>>>>>> 803cbe5b4789d816bdcc1d2f426bd22b910bcfe9:engine/universe/universe.go
+	"github.com/SpaceHexagon/convolvr/services/engine/types"
 )
 
 type Universe struct {

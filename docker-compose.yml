@@ -10,14 +10,17 @@ kafka:
 
 engine:
   build: cmd/engine
+  volumes:
+    - ./web:/web
   links:
     - kafka
   ports:
-    - 8080
+    - 2000:8080
   environment:
-    - KAFKA_ADDR=kafka:9092
-    - SSL=false
-    - PORT=:8080
-    - TLS_PORT=
-    - CERTIFICATE=
-    - KEY=
+    WEB_PATH: "/web"
+    KAFKA_ADDR: "kafka:9092"
+    SSL: "false"
+    PORT: ":8080"
+    TLS_PORT:
+    CERTIFICATE:
+    KEY:
